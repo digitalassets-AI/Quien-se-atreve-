@@ -1,0 +1,1455 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1a0033">
+<meta name="description" content="Juego de verdades y retos para mayores de 18 años. Hecho por Digital Assets.">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png">
+<link rel="icon" href="./icons/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="¿Quién se atreve?">
+<meta property="og:title" content="¿Quién se atreve?">
+<meta property="og:description" content="Verdades y retos para mayores de 18 años. Hecho por Digital Assets.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="./icons/icon-512.png">
+<title>🎭 ¿Quién se atreve?</title>
+<style>
+  :root {
+    --fs-xs: clamp(0.7rem, 2vw, 0.85rem);
+    --fs-sm: clamp(0.8rem, 2.5vw, 0.95rem);
+    --fs-md: clamp(0.95rem, 3vw, 1.1rem);
+    --fs-lg: clamp(1.2rem, 4vw, 1.6rem);
+    --fs-xxl: clamp(2rem, 7vw, 3rem);
+    --space-xs: clamp(4px, 1vw, 8px);
+    --space-sm: clamp(8px, 2vw, 12px);
+    --space-md: clamp(12px, 3vw, 20px);
+    --space-lg: clamp(16px, 4vw, 28px);
+    --radius-sm: clamp(8px, 2vw, 12px);
+    --radius-md: clamp(12px, 3vw, 18px);
+    --radius-lg: clamp(16px, 4vw, 24px);
+    --radius-xl: clamp(20px, 5vw, 30px);
+    --btn-min: clamp(40px, 10vw, 52px);
+    --btn-max: clamp(44px, 12vw, 60px);
+    --max-content: min(92%, 520px);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html, body { height:100%; height:100dvh; font-family:'Segoe UI', system-ui, sans-serif; overflow-x:hidden; }
+  body {
+    background: linear-gradient(135deg, #1a0033 0%, #3d0066 50%, #660066 100%);
+    color:#fff; display:flex; align-items:center; justify-content:center; position:relative;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  }
+  .bubbles { position:fixed; inset:0; overflow:hidden; pointer-events:none; z-index:0; }
+  .bubble { position:absolute; bottom:-100px; background:rgba(255,255,255,0.08); border-radius:50%; animation: rise linear infinite; }
+  @keyframes rise { 0%{transform:translateY(0) scale(0.5); opacity:0;} 20%{opacity:1;} 100%{transform:translateY(-110vh) scale(1.2); opacity:0;} }
+
+  .screen {
+    position:fixed; inset:0; display:flex; flex-direction:column; align-items:center;
+    padding: var(--space-md);
+    padding-top: calc(var(--space-lg) + env(safe-area-inset-top));
+    padding-bottom: calc(var(--space-md) + env(safe-area-inset-bottom));
+    opacity:0; pointer-events:none; transition:opacity .4s ease, transform .4s ease;
+    transform:scale(0.95); z-index:2; overflow-y:auto; overflow-x:hidden; -webkit-overflow-scrolling:touch;
+  }
+  .screen.active { opacity:1; pointer-events:auto; transform:scale(1); }
+  .screen.center-content { justify-content:center; }
+
+  .logo {
+    font-size:var(--fs-xxl); font-weight:900; text-align:center;
+    background:linear-gradient(45deg,#ff00cc,#ffcc00,#00ffcc);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    animation: pulse 2s ease-in-out infinite; margin-bottom:var(--space-xs); line-height:1.1;
+  }
+  .subtitle { font-size:var(--fs-sm); opacity:.8; margin-bottom:var(--space-md); letter-spacing:2px; text-align:center; }
+  @keyframes pulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.05);} }
+
+  .bottle-icon {
+    font-size:clamp(3rem, 12vw, 5rem); animation: wobble 3s ease-in-out infinite;
+    filter: drop-shadow(0 0 20px rgba(255,204,0,0.6)); margin-bottom:var(--space-md);
+  }
+  @keyframes wobble { 0%,100%{transform:rotate(-15deg);} 50%{transform:rotate(15deg);} }
+
+  .app-logo {
+    display:block; width:auto; max-width:min(68vw, 300px); max-height:30dvh;
+    margin:0 auto var(--space-sm);
+    filter:drop-shadow(0 12px 30px rgba(255,120,0,0.35));
+    animation:logoFloat 4s ease-in-out infinite;
+  }
+  .app-logo.small { max-width:min(40vw, 140px); max-height:17dvh; margin-bottom:var(--space-xs); }
+  .app-title { font-size:clamp(1rem, 4.2vw, 1.35rem); margin:0 0 2px; animation:none; letter-spacing:1px; }
+  @keyframes logoFloat { 0%,100%{transform:translateY(0) scale(1);} 50%{transform:translateY(-5px) scale(1.015);} }
+
+  .terms-box {
+    width:var(--max-content); max-height:45dvh; overflow-y:auto;
+    background:rgba(0,0,0,0.4); backdrop-filter:blur(10px);
+    border:2px solid rgba(255,255,255,0.2); border-radius:var(--radius-lg);
+    padding:var(--space-md); margin:var(--space-sm) 0; font-size:var(--fs-sm); line-height:1.6; text-align:left;
+  }
+  .terms-box h2 { color:#ffcc00; margin-bottom:8px; font-size:var(--fs-md); }
+  .terms-box p { margin-bottom:8px; }
+  .terms-box .warning {
+    background:rgba(255,51,102,0.2); border-left:4px solid #ff3366;
+    padding:var(--space-sm); border-radius:var(--radius-sm); margin:var(--space-sm) 0;
+    font-weight:600; color:#ffcccc;
+  }
+  .terms-box ul { margin-left:18px; margin-bottom:8px; }
+  .terms-box li { margin-bottom:4px; }
+
+  .accept-row {
+    display:flex; align-items:center; gap:var(--space-sm);
+    width:var(--max-content); margin:var(--space-sm) 0;
+    padding:var(--space-sm) var(--space-md);
+    background:rgba(255,255,255,0.08); border-radius:var(--radius-md);
+  }
+  .accept-row input[type="checkbox"] { width:22px; height:22px; min-width:22px; accent-color:#ff00cc; cursor:pointer; }
+  .accept-row label { cursor:pointer; font-size:var(--fs-sm); flex:1; line-height:1.3; }
+
+  .category-btn, .subcategory-btn, .content-btn {
+    width:var(--max-content); padding:var(--space-md); margin:var(--space-xs) 0;
+    background:rgba(255,255,255,0.08); backdrop-filter:blur(10px);
+    border:2px solid rgba(255,255,255,0.2); border-radius:var(--radius-lg);
+    color:#fff; font-size:var(--fs-md); font-weight:600; cursor:pointer;
+    display:flex; align-items:center; gap:var(--space-md);
+    transition:all .3s cubic-bezier(.4,0,.2,1); position:relative; overflow:hidden;
+    min-height:var(--btn-max);
+  }
+  .category-btn::before, .subcategory-btn::before, .content-btn::before {
+    content:''; position:absolute; inset:0;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent);
+    transform:translateX(-100%); transition:transform .6s;
+  }
+  .category-btn:active::before, .subcategory-btn:active::before, .content-btn:active::before { transform:translateX(100%); }
+  .category-btn:active, .subcategory-btn:active, .content-btn:active { transform:scale(0.96); }
+  .category-btn .emoji, .subcategory-btn .emoji, .content-btn .emoji { font-size:clamp(1.5rem, 6vw, 2rem); flex-shrink:0; }
+  .category-btn .info, .subcategory-btn .info, .content-btn .info { text-align:left; flex:1; min-width:0; }
+  .category-btn .info b, .subcategory-btn .info b, .content-btn .info b { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .category-btn .info small, .subcategory-btn .info small, .content-btn .info small { display:block; font-size:var(--fs-xs); opacity:.7; margin-top:2px; }
+
+  .category-btn.cat1 { border-color:#ff6b6b; box-shadow:0 0 20px rgba(255,107,107,0.3); }
+  .category-btn.cat2 { border-color:#4ecdc4; box-shadow:0 0 20px rgba(78,205,196,0.3); }
+  .category-btn.cat3 { border-color:#ff00cc; box-shadow:0 0 20px rgba(255,0,204,0.3); }
+  .category-btn.cat4 { border-color:#ffcc00; box-shadow:0 0 20px rgba(255,204,0,0.3); }
+
+  .subcategory-btn.sub1 { border-color:#ff9999; box-shadow:0 0 15px rgba(255,153,153,0.3); }
+  .subcategory-btn.sub2 { border-color:#7edcd5; box-shadow:0 0 15px rgba(126,220,213,0.3); }
+  .subcategory-btn.sub3 { border-color:#ff66dd; box-shadow:0 0 15px rgba(255,102,221,0.3); }
+  .subcategory-btn.sub4 { border-color:#ffdd66; box-shadow:0 0 15px rgba(255,221,102,0.3); }
+
+  .content-btn.c-questions { border-color:#4ecdc4; box-shadow:0 0 20px rgba(78,205,196,0.4); background:linear-gradient(135deg, rgba(78,205,196,0.15), rgba(78,205,196,0.05)); }
+  .content-btn.c-mixed { border-color:#ff00cc; box-shadow:0 0 20px rgba(255,0,204,0.4); background:linear-gradient(135deg, rgba(255,0,204,0.15), rgba(255,204,0,0.05)); }
+  .content-btn.c-actions { border-color:#ff6600; box-shadow:0 0 20px rgba(255,102,0,0.4); background:linear-gradient(135deg, rgba(255,102,0,0.15), rgba(255,51,102,0.05)); }
+
+  .title { font-size:var(--fs-lg); font-weight:800; margin-bottom:var(--space-md); text-align:center; line-height:1.2; }
+
+  .input-row { display:flex; gap:var(--space-xs); width:var(--max-content); margin-bottom:var(--space-sm); align-items:center; flex-wrap:wrap; }
+  .input-row input {
+    flex:1 1 120px; min-width:0; padding:var(--space-sm) var(--space-md);
+    border-radius:var(--radius-md); border:none; background:rgba(255,255,255,0.1);
+    color:#fff; font-size:var(--fs-md); border:2px solid rgba(255,255,255,0.2); outline:none; min-height:var(--btn-min);
+  }
+  .input-row input::placeholder { color:rgba(255,255,255,0.5); }
+  .input-row input:focus { border-color:#ff00cc; }
+
+  .gender-toggle { display:flex; gap:3px; background:rgba(255,255,255,0.05); border-radius:var(--radius-md); padding:3px; flex-shrink:0; }
+  .gender-btn {
+    width:var(--btn-min); height:var(--btn-min); border-radius:var(--radius-sm); border:none;
+    background:transparent; font-size:clamp(1.2rem, 5vw, 1.5rem); cursor:pointer;
+    transition:all .2s; opacity:.5; display:flex; align-items:center; justify-content:center;
+  }
+  .gender-btn.active { background:linear-gradient(135deg,#ff00cc,#ffcc00); opacity:1; transform:scale(1.05); box-shadow:0 0 15px rgba(255,0,204,0.5); }
+
+  .add-btn {
+    padding:0 var(--space-md); min-width:var(--btn-min); min-height:var(--btn-min);
+    border-radius:var(--radius-md); border:none; background:linear-gradient(45deg,#ff00cc,#ffcc00);
+    color:#fff; font-size:clamp(1.2rem, 5vw, 1.5rem); font-weight:bold; cursor:pointer; flex-shrink:0;
+  }
+
+  .players-list { width:var(--max-content); max-height:35dvh; overflow-y:auto; margin:var(--space-xs) 0; }
+  .player-chip {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:var(--space-sm) var(--space-md); margin:var(--space-xs) 0;
+    border-radius:var(--radius-md); background:rgba(255,255,255,0.1);
+    animation: slideIn .3s ease; gap:var(--space-sm); min-height:var(--btn-min);
+  }
+  .player-chip.male { border-left:4px solid #4ecdc4; }
+  .player-chip.female { border-left:4px solid #ff00cc; }
+  @keyframes slideIn { from{opacity:0;transform:translateX(-20px);} to{opacity:1;transform:translateX(0);} }
+  .player-chip .info-chip { display:flex; align-items:center; gap:var(--space-sm); flex:1; min-width:0; flex-wrap:wrap; }
+  .player-chip .gender-icon { font-size:clamp(1.1rem, 4vw, 1.4rem); flex-shrink:0; }
+  .player-chip .info-chip b { font-size:var(--fs-sm); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .player-chip .skips-badge { background:rgba(255,204,0,0.3); padding:2px 8px; border-radius:10px; font-size:var(--fs-xs); font-weight:bold; color:#ffcc00; flex-shrink:0; }
+  .player-chip .del { background:rgba(255,51,102,0.3); border:none; color:#fff; width:30px; height:30px; min-width:30px; border-radius:50%; cursor:pointer; font-size:1rem; flex-shrink:0; }
+
+  .primary-btn {
+    width:var(--max-content); padding:var(--space-md); margin-top:var(--space-sm);
+    border:none; border-radius:var(--radius-lg); font-size:var(--fs-md); font-weight:700;
+    background:linear-gradient(45deg,#ff00cc,#00ffcc); color:#fff; cursor:pointer;
+    box-shadow:0 8px 25px rgba(255,0,204,0.4); transition:transform .2s; min-height:var(--btn-max);
+  }
+  .primary-btn:active { transform:scale(0.96); }
+  .primary-btn:disabled { opacity:.4; cursor:not-allowed; }
+
+  .back-btn {
+    position:fixed; top:calc(var(--space-md) + env(safe-area-inset-top)); left:var(--space-md);
+    background:rgba(255,255,255,0.15); backdrop-filter:blur(10px);
+    border:none; color:#fff; width:40px; height:40px; min-width:40px;
+    border-radius:50%; font-size:1.2rem; cursor:pointer; z-index:10;
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  #gameScreen {
+    justify-content:space-between; overflow:hidden;
+    padding-top:calc(58px + env(safe-area-inset-top));
+    padding-bottom:calc(10px + env(safe-area-inset-bottom));
+  }
+  .game-top, .game-bottom { display:flex; flex-direction:column; align-items:center; gap:6px; width:100%; z-index:3; }
+  #gameScreen .footer-hint { margin-top:0; }
+  .players-circle {
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    width:min(85vmin, 85vw, 500px); height:min(85vmin, 85vw, 500px);
+    aspect-ratio:1/1; margin:0; flex-shrink:0; z-index:1;
+  }
+  .player-spot {
+    position:absolute; transform:translate(-50%,-50%); border-radius:50%;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    font-weight:bold; text-align:center; padding:3px; line-height:1.1; transition:all .3s;
+    width:clamp(48px, 14vmin, 75px); height:clamp(48px, 14vmin, 75px);
+    font-size:clamp(0.55rem, 2vmin, 0.85rem);
+  }
+  .player-spot.male { background:linear-gradient(135deg,#4ecdc4,#0099cc); box-shadow:0 0 12px rgba(78,205,196,0.5); }
+  .player-spot.female { background:linear-gradient(135deg,#ff00cc,#6600cc); box-shadow:0 0 12px rgba(255,0,204,0.5); }
+  .player-spot .gender-mini { font-size:clamp(0.8rem, 3vmin, 1.2rem); line-height:1; }
+  .player-spot .name-mini { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:90%; }
+  .player-spot .skips-mini {
+    position:absolute; top:-4px; right:-4px; background:#ffcc00; color:#000;
+    width:clamp(16px, 4vmin, 22px); height:clamp(16px, 4vmin, 22px); border-radius:50%;
+    font-size:clamp(0.6rem, 2vmin, 0.75rem); font-weight:bold;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .player-spot.selected {
+    background:linear-gradient(135deg,#ffcc00,#ff6600) !important;
+    box-shadow:0 0 30px rgba(255,204,0,0.9);
+    transform:translate(-50%,-50%) scale(1.25); animation:glow 1s ease-in-out infinite;
+  }
+  @keyframes glow { 0%,100%{box-shadow:0 0 30px rgba(255,204,0,0.9);} 50%{box-shadow:0 0 50px rgba(255,204,0,1.2);} }
+
+  .bottle-container { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:clamp(100px, 30vmin, 160px); height:clamp(100px, 30vmin, 160px); cursor:pointer; }
+  .bottle {
+    width:100%; height:100%; font-size:clamp(3.5rem, 12vmin, 6rem);
+    display:flex; align-items:center; justify-content:center; transform-origin:center;
+    transition:transform 4s cubic-bezier(.17,.67,.21,.99);
+    filter:drop-shadow(0 0 15px rgba(255,204,0,0.6));
+  }
+  .spin-btn {
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    width:clamp(85px, 24vmin, 120px); height:clamp(85px, 24vmin, 120px); border-radius:50%;
+    background:radial-gradient(circle,#ffcc00,#ff6600); border:3px solid #fff;
+    color:#fff; font-weight:900; font-size:clamp(0.85rem, 3vmin, 1.1rem); cursor:pointer;
+    box-shadow:0 0 30px rgba(255,204,0,0.8); z-index:5; letter-spacing:1px;
+    animation:btnPulse 1.5s ease-in-out infinite;
+  }
+  @keyframes btnPulse { 0%,100%{box-shadow:0 0 30px rgba(255,204,0,0.8);} 50%{box-shadow:0 0 50px rgba(255,204,0,1.2);} }
+  .spin-btn:active { transform:translate(-50%,-50%) scale(0.92); }
+  .spin-btn.hidden { display:none; }
+
+  .mode-label {
+    padding:var(--space-xs) var(--space-md); border-radius:var(--radius-lg);
+    background:rgba(0,0,0,0.4); backdrop-filter:blur(10px);
+    font-size:var(--fs-xs); font-weight:600; margin-bottom:0;
+    text-align:center; max-width:95%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  }
+
+  .game-mode-switch {
+    display:flex; align-items:center; justify-content:center; gap:4px;
+    padding:4px; border-radius:999px; max-width:96%;
+    background:rgba(0,0,0,0.38); border:1px solid rgba(255,255,255,0.16);
+    backdrop-filter:blur(10px); box-shadow:0 6px 18px rgba(0,0,0,0.25);
+  }
+  .game-mode-switch button {
+    border:none; background:transparent; color:rgba(255,255,255,0.72);
+    font-family:inherit; font-size:clamp(0.62rem, 2.6vw, 0.8rem); font-weight:800;
+    padding:6px 10px; border-radius:999px; cursor:pointer; white-space:nowrap;
+    transition:background .2s, color .2s, transform .15s;
+  }
+  .game-mode-switch button.active {
+    color:#220033; background:linear-gradient(135deg,#ffcc00,#ff6600);
+    box-shadow:0 2px 12px rgba(255,204,0,0.45);
+  }
+  .game-mode-switch button:active { transform:scale(0.95); }
+
+  .modal { position:fixed; inset:0; background:rgba(0,0,0,0.85); display:flex; align-items:center; justify-content:center; z-index:100; opacity:0; pointer-events:none; transition:opacity .3s; padding:var(--space-md); overflow-y:auto; }
+  .modal.show { opacity:1; pointer-events:auto; }
+  .modal-content {
+    background:linear-gradient(135deg,#2a0052,#660066); border:2px solid #ff00cc;
+    border-radius:var(--radius-xl); padding:var(--space-lg) var(--space-md);
+    width:min(92%, 400px); max-height:90dvh; overflow-y:auto; text-align:center;
+    transform:scale(0.7); transition:transform .4s cubic-bezier(.34,1.56,.64,1);
+    box-shadow:0 0 50px rgba(255,0,204,0.5);
+  }
+  .modal.show .modal-content { transform:scale(1); }
+  .modal h2 { font-size:var(--fs-lg); margin-bottom:var(--space-xs); color:#ffcc00; line-height:1.2; }
+  .modal .target {
+    font-size:clamp(1.3rem, 5vw, 2rem); font-weight:900; margin:var(--space-sm) 0;
+    background:linear-gradient(45deg,#ff00cc,#00ffcc);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .modal .challenge {
+    font-size:var(--fs-md); line-height:1.5; margin:var(--space-sm) 0;
+    padding:var(--space-md); background:rgba(0,0,0,0.3); border-radius:var(--radius-md);
+    min-height:70px; display:flex; align-items:center; justify-content:center;
+  }
+  .modal .emoji-big { font-size:clamp(2.5rem, 10vw, 3.5rem); margin-bottom:var(--space-xs); }
+
+  .content-type-badge {
+    display:inline-flex; align-items:center; gap:6px; padding:6px 14px;
+    border-radius:20px; font-size:var(--fs-xs); font-weight:700;
+    margin-bottom:var(--space-sm); text-transform:uppercase; letter-spacing:1px;
+  }
+  .badge-question { background:rgba(78,205,196,0.25); border:1px solid #4ecdc4; color:#4ecdc4; }
+  .badge-action { background:rgba(255,102,0,0.25); border:1px solid #ff6600; color:#ff9933; }
+
+  .skips-info {
+    display:flex; align-items:center; justify-content:center; gap:var(--space-sm);
+    padding:var(--space-sm); background:rgba(255,204,0,0.15); border-radius:var(--radius-md);
+    margin-bottom:var(--space-sm); font-size:var(--fs-sm); flex-wrap:wrap;
+  }
+  .skips-info .skips-count { color:#ffcc00; font-weight:bold; font-size:var(--fs-md); }
+  .modal-buttons { display:flex; flex-direction:column; gap:var(--space-sm); }
+  .skip-btn {
+    padding:var(--space-md); border:none; border-radius:var(--radius-md);
+    background:linear-gradient(45deg,#ff6600,#ff3366); color:#fff; font-weight:700;
+    font-size:var(--fs-sm); cursor:pointer; display:flex; align-items:center; justify-content:center;
+    gap:var(--space-sm); transition:transform .2s; min-height:var(--btn-max);
+  }
+  .skip-btn:active { transform:scale(0.96); }
+  .skip-btn:disabled { opacity:.4; cursor:not-allowed; }
+  .skip-btn .shot-icon { font-size:clamp(1.1rem, 4vw, 1.4rem); }
+
+  .confetti { position:fixed; width:10px; height:10px; top:-10px; z-index:99; pointer-events:none; }
+  @keyframes confettiFall { to { transform:translateY(110vh) rotate(720deg); opacity:0; } }
+
+  .footer-hint { font-size:var(--fs-xs); opacity:.6; text-align:center; width:100%; padding:var(--space-xs); margin-top:auto; }
+  .credit { font-size:var(--fs-xs); opacity:.75; text-align:center; width:100%; margin-top:10px; letter-spacing:1px; }
+  .credit b { color:#ffcc00; }
+  .install-btn {
+    display:inline-flex; align-items:center; justify-content:center; gap:6px;
+    width:fit-content; max-width:var(--max-content);
+    margin:10px auto 2px; padding:9px 16px;
+    background:rgba(255,255,255,0.10); color:#fff;
+    border:1px solid rgba(255,255,255,0.28); border-radius:999px;
+    font-family:inherit; font-size:var(--fs-xs); font-weight:700; letter-spacing:.5px;
+    cursor:pointer; backdrop-filter:blur(10px);
+  }
+  .install-btn:hover { background:rgba(255,255,255,0.16); }
+  .install-btn[hidden] { display:none; }
+
+  .terms-box::-webkit-scrollbar, .players-list::-webkit-scrollbar, .modal-content::-webkit-scrollbar { width:5px; }
+  .terms-box::-webkit-scrollbar-thumb, .players-list::-webkit-scrollbar-thumb, .modal-content::-webkit-scrollbar-thumb { background:rgba(255,0,204,0.5); border-radius:3px; }
+
+  @media (max-height:600px) {
+    .bottle-icon { font-size:2.5rem; margin-bottom:8px; }
+    .logo { font-size:1.6rem; }
+    .terms-box { max-height:35dvh; font-size:0.75rem; }
+    .players-circle { width:75vmin; height:75vmin; }
+  }
+  @media (max-width:360px) {
+    .category-btn, .subcategory-btn, .content-btn { padding:12px; font-size:0.95rem; }
+    .player-spot { width:48px; height:48px; font-size:0.55rem; }
+    .player-spot .gender-mini { font-size:0.85rem; }
+  }
+  @media (min-width:768px) {
+    .screen { padding:30px; }
+    .terms-box { max-width:500px; max-height:55dvh; }
+    .players-circle { width:min(70vmin, 500px); height:min(70vmin, 500px); }
+  }
+  @media (min-width:1024px) {
+    body { padding:20px; }
+    .screen { max-width:600px; margin:0 auto; }
+    .players-circle { width:min(60vmin, 550px); height:min(60vmin, 550px); }
+  }
+  @media (max-height:500px) and (orientation:landscape) {
+    .bottle-icon { display:none; }
+    .logo { font-size:1.4rem; margin-bottom:4px; }
+    .subtitle { margin-bottom:10px; }
+    .terms-box { max-height:30dvh; }
+    .players-circle { width:55vmin; height:55vmin; }
+    #gameScreen { padding-top:50px; }
+  }
+  @media (prefers-reduced-motion:reduce) {
+    *, *::before, *::after { animation-duration:0.01ms !important; transition-duration:0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bubbles" id="bubbles"></div>
+
+<!-- TÉRMINOS -->
+<div class="screen center-content active" id="termsScreen">
+  <img class="app-logo" src="__LOGO_DATA_URI__" alt="¿Quién se atreve?">
+  <h1 class="logo app-title">¿QUIÉN SE ATREVE?</h1>
+  <p class="subtitle">★ TÉRMINOS Y CONDICIONES ★</p>
+
+  <div class="terms-box">
+    <h2>⚠️ AVISO IMPORTANTE</h2>
+    <p>Al utilizar esta aplicación, aceptas los siguientes términos y condiciones:</p>
+    <div class="warning">
+      🚫 <b>Digital Assets</b> y el desarrollador <b>NO se hacen responsables de nada</b>: ni de las acciones, decisiones, consecuencias, daños, lesiones, conflictos o cualquier situación que ocurra durante o después del uso de esta aplicación.
+    </div>
+    <h2>📋 Términos de uso:</h2>
+    <ul>
+      <li>🔞 Esta app está pensada para <b>mayores de edad</b>.</li>
+      <li>🎭 Los retos son <b>opcionales</b>, nadie está obligado a cumplirlos.</li>
+      <li>🥃 Para <b>saltarte un reto</b> debes tomar un shot (máximo 2 saltos por jugador).</li>
+      <li>🤝 Juega con <b>respeto y consentimiento</b> de todos los participantes.</li>
+      <li>🍷 Consume alcohol con <b>moderación</b> si decides hacerlo.</li>
+      <li>🚗 <b>Nunca conduzcas</b> bajo los efectos del alcohol.</li>
+      <li>💬 Lo que pasa en el juego, <b>se queda en el juego</b>.</li>
+      <li>🛑 Puedes <b>detener el juego</b> en cualquier momento.</li>
+    </ul>
+    <h2>🔐 Privacidad:</h2>
+    <p>Esta app <b>no recopila datos personales</b>. Todo se ejecuta localmente en tu dispositivo.</p>
+    <h2>🏢 Responsabilidad de la empresa:</h2>
+    <p><b>Digital Assets</b> no se responsabiliza de nada de lo que ocurra antes, durante o después del juego. La aplicación se entrega <b>tal cual</b>, sin garantías de ningún tipo. Cada jugador es <b>100% responsable</b> de sus actos y de respetar los límites y el consentimiento de los demás.</p>
+    <div class="warning">
+      ⚖️ Al continuar, declaras que eres mayor de edad y aceptas que <b>tú eres el único responsable</b> de tus actos y los de tu grupo durante el juego.
+    </div>
+  </div>
+
+  <div class="accept-row">
+    <input type="checkbox" id="acceptCheck">
+    <label for="acceptCheck">He leído y acepto los términos y condiciones</label>
+  </div>
+
+  <button class="primary-btn" id="acceptBtn" disabled>
+    ✅ ACEPTAR Y CONTINUAR
+  </button>
+  <p class="credit">Hecho por <b>Digital Assets</b></p>
+  <button type="button" class="install-btn" id="installBtn" hidden>📲 INSTALAR APP</button>
+</div>
+
+<!-- CATEGORÍAS -->
+<div class="screen center-content" id="categoryScreen">
+  <button class="back-btn" onclick="show('termsScreen')">←</button>
+  <img class="app-logo small" src="__LOGO_DATA_URI__" alt="¿Quién se atreve?">
+  <h1 class="logo" style="font-size:clamp(1.4rem,5vw,2rem);">¿CON QUIÉN JUEGAS?</h1>
+  <p class="subtitle">Elige tu categoría</p>
+  <button class="category-btn cat1" onclick="selectCategory('familia')">
+    <span class="emoji">👨‍👩‍👧‍👦</span>
+    <div class="info"><b>Familia</b><small>Primos, familia</small></div>
+  </button>
+  <button class="category-btn cat2" onclick="selectCategory('amigos')">
+    <span class="emoji">👯</span>
+    <div class="info"><b>Amigos</b><small>Panas, mejores amigos, amigos 🔥</small></div>
+  </button>
+  <button class="category-btn cat3" onclick="selectCategory('pareja')">
+    <span class="emoji">💑</span>
+    <div class="info"><b>Pareja</b><small>Conocerse, conocerse a fondo, pareja 🔥</small></div>
+  </button>
+  <button class="category-btn cat4" onclick="selectCategory('universidad')">
+    <span class="emoji">🎓</span>
+    <div class="info"><b>Universidad</b><small>Compañeros, amigos de la U, universidad 🔥</small></div>
+  </button>
+  <p class="credit">Hecho por <b>Digital Assets</b></p>
+</div>
+
+<!-- SUBCATEGORÍAS -->
+<div class="screen center-content" id="subcategoryScreen">
+  <button class="back-btn" onclick="show('categoryScreen')">←</button>
+  <h2 class="title" id="subcategoryTitle">🎯 Subcategoría</h2>
+  <div id="subcategoryButtons" style="width:100%;display:flex;flex-direction:column;align-items:center;"></div>
+</div>
+
+<!-- TIPO DE CONTENIDO -->
+<div class="screen center-content" id="contentTypeScreen">
+  <button class="back-btn" onclick="show('subcategoryScreen')">←</button>
+  <div class="bottle-icon">🎲</div>
+  <h2 class="title">¿Qué quieres jugar?</h2>
+  <p class="subtitle">Elige el tipo de contenido</p>
+  <button class="content-btn c-questions" onclick="selectContentType('questions')">
+    <span class="emoji">💬</span>
+    <div class="info"><b>Solo Preguntas</b><small>Verdades profundas y curiosas</small></div>
+  </button>
+  <button class="content-btn c-mixed" onclick="selectContentType('mixed')">
+    <span class="emoji">🎭</span>
+    <div class="info"><b>Preguntas y Retos</b><small>La mezcla perfecta (recomendado)</small></div>
+  </button>
+  <button class="content-btn c-actions" onclick="selectContentType('actions')">
+    <span class="emoji">🔥</span>
+    <div class="info"><b>Solo Retos</b><small>Atrevimientos y acciones</small></div>
+  </button>
+</div>
+
+<!-- JUGADORES -->
+<div class="screen center-content" id="playersScreen">
+  <button class="back-btn" onclick="show('contentTypeScreen')">←</button>
+  <h2 class="title">👥 Agrega jugadores</h2>
+  <div class="input-row">
+    <input type="text" id="playerInput" placeholder="Nombre" maxlength="12">
+    <div class="gender-toggle">
+      <button class="gender-btn active" id="genderM" onclick="setGender('M')">👨</button>
+      <button class="gender-btn" id="genderF" onclick="setGender('F')">👩</button>
+    </div>
+    <button class="add-btn" onclick="addPlayer()">+</button>
+  </div>
+  <div class="players-list" id="playersList"></div>
+  <button class="primary-btn" id="startBtn" onclick="startGame()" disabled>
+    🎮 COMENZAR JUEGO
+  </button>
+  <p class="footer-hint">Mínimo 2 jugadores · Se guardan solos para la próxima partida</p>
+  <button class="primary-btn" style="background:linear-gradient(135deg,#ff4d6d,#c9184a);margin-top:8px;" onclick="clearPlayers()">🗑️ BORRAR TODOS</button>
+  <button class="primary-btn" style="background:linear-gradient(135deg,#7b2cbf,#3c096c);margin-top:8px;" onclick="resetUsed()">🔄 REINICIAR PREGUNTAS VISTAS</button>
+</div>
+
+<!-- JUEGO -->
+<div class="screen" id="gameScreen">
+  <button class="back-btn" onclick="confirmExit()">←</button>
+  <div class="game-top">
+    <div class="mode-label" id="modeLabel">MODO</div>
+  </div>
+  <div class="players-circle" id="playersCircle">
+    <div class="bottle-container" onclick="spinBottle()">
+      <div class="bottle" id="bottle">🍾</div>
+    </div>
+    <button class="spin-btn" id="spinBtn" onclick="spinBottle()">¡GIRAR!</button>
+  </div>
+  <div class="game-bottom">
+    <div class="game-mode-switch" id="gameModeSwitch" role="group" aria-label="Cambiar tipo de contenido">
+      <button type="button" data-mode="questions" onclick="setGameMode('questions')">💬 Preguntas</button>
+      <button type="button" data-mode="actions" onclick="setGameMode('actions')">🔥 Retos</button>
+      <button type="button" data-mode="mixed" onclick="setGameMode('mixed')">🎲 Aleatorio</button>
+    </div>
+    <p class="footer-hint">Toca la botella o el botón para girar</p>
+  </div>
+</div>
+
+<!-- MODAL RESULTADO -->
+<div class="modal" id="resultModal">
+  <div class="modal-content">
+    <div class="emoji-big" id="resultEmoji">🎯</div>
+    <h2 id="resultTitle">¡La botella apunta a!</h2>
+    <div class="target" id="resultTarget">-</div>
+    <div id="contentTypeBadge"></div>
+    <div class="challenge" id="resultChallenge">-</div>
+    <div class="skips-info">
+      <span>🥃 Saltos restantes:</span>
+      <span class="skips-count" id="skipsCount">2/2</span>
+    </div>
+    <div class="modal-buttons">
+      <button class="primary-btn" id="modalAcceptBtn" onclick="closeModal()">✅ CUMPLIR RETO</button>
+      <button class="skip-btn" id="skipBtn" onclick="skipChallenge()">
+        <span class="shot-icon">🥃</span>
+        <span>SALTAR (Tomar Shot)</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// 🔌 BASE DE DATOS
+// ============================================================
+const DB = {
+  saveGame: (gameData) => {
+    try { localStorage.setItem('bottleGame', JSON.stringify(gameData)); }
+    catch(e) { console.error('Error guardando:', e); }
+  },
+  loadGame: () => {
+    try {
+      const data = localStorage.getItem('bottleGame');
+      return data ? JSON.parse(data) : null;
+    } catch(e) { return null; }
+  },
+  savePlayers: (list) => {
+    try { localStorage.setItem('bottlePlayers', JSON.stringify(list)); }
+    catch(e) { console.error('Error guardando jugadores:', e); }
+  },
+  loadPlayers: () => {
+    try {
+      const data = localStorage.getItem('bottlePlayers');
+      return data ? JSON.parse(data) : [];
+    } catch(e) { return []; }
+  },
+  clearPlayers: () => {
+    try { localStorage.removeItem('bottlePlayers'); } catch(e) {}
+  },
+  saveUsed: (set) => {
+    try { localStorage.setItem('bottleUsed', JSON.stringify([...set])); }
+    catch(e) { console.error('Error guardando vistas:', e); }
+  },
+  loadUsed: () => {
+    try {
+      const data = localStorage.getItem('bottleUsed');
+      return new Set(data ? JSON.parse(data) : []);
+    } catch(e) { return new Set(); }
+  },
+  resetUsed: () => {
+    try { localStorage.removeItem('bottleUsed'); } catch(e) {}
+  },
+  savePlayerStats: (playerId, stats) => {
+    console.log('📊 Stats:', playerId, stats);
+  }
+};
+
+// ============================================================
+// 🫧 BURBUJAS
+// ============================================================
+const bubblesEl = document.getElementById('bubbles');
+for (let i=0; i<15; i++) {
+  const b = document.createElement('div');
+  b.className = 'bubble';
+  const size = Math.random()*50 + 20;
+  b.style.width = b.style.height = size+'px';
+  b.style.left = Math.random()*100 + '%';
+  b.style.animationDuration = (Math.random()*10 + 8) + 's';
+  b.style.animationDelay = Math.random()*10 + 's';
+  bubblesEl.appendChild(b);
+}
+
+// ============================================================
+// 📦 ESTADO
+// ============================================================
+let currentCategory = '';
+let currentSubcategory = '';
+let currentContentType = '';
+let players = DB.loadPlayers();
+let usedChallenges = DB.loadUsed();
+let currentGender = 'M';
+let isSpinning = false;
+let currentRotation = 0;
+let currentTargetIndex = -1;
+let currentChallenge = '';
+let currentChallengeType = '';
+
+// ============================================================
+// 🧭 NAVEGACIÓN
+// ============================================================
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.getElementById(id).scrollTop = 0;
+}
+
+// ============================================================
+// 📜 TÉRMINOS
+// ============================================================
+const acceptCheck = document.getElementById('acceptCheck');
+const acceptBtn = document.getElementById('acceptBtn');
+
+acceptCheck.addEventListener('change', function() {
+  acceptBtn.disabled = !this.checked;
+  vibrate(15);
+});
+
+acceptBtn.addEventListener('click', function() {
+  if (!acceptCheck.checked) return;
+  show('categoryScreen');
+  vibrate([30,50,30]);
+});
+
+// ============================================================
+// 🎭 CATEGORÍAS Y SUBCATEGORÍAS
+// ============================================================
+function selectCategory(category) {
+  currentCategory = category;
+  renderSubcategories();
+  show('subcategoryScreen');
+  vibrate(20);
+}
+
+function renderSubcategories() {
+  const container = document.getElementById('subcategoryButtons');
+  const titles = {
+    familia: '👨‍👩‍👧‍👦 Familia',
+    amigos: '👯 Amigos',
+    pareja: '💑 Pareja',
+    universidad: '🎓 Universidad'
+  };
+  document.getElementById('subcategoryTitle').textContent = titles[currentCategory];
+
+  const subcategories = {
+    familia: [
+      { id:'primos', name:'Primos', emoji:'👫' },
+      { id:'familia', name:'Familia', emoji:'👨‍👩‍👧‍👦' }
+    ],
+    amigos: [
+      { id:'amigos_hot', name:'Amigos 🔥', emoji:'👯' },
+      { id:'panas', name:'Panas', emoji:'🤝' },
+      { id:'mejores_amigos', name:'Mejores Amigos', emoji:'💯' }
+    ],
+    pareja: [
+      { id:'pareja_hot', name:'Pareja 🔥', emoji:'💋' },
+      { id:'conocerse_fondo', name:'Conocerse a Fondo', emoji:'💭' },
+      { id:'conocerse', name:'Conocerse', emoji:'💕' }
+    ],
+    universidad: [
+      { id:'universidad_hot', name:'Universidad 🔥', emoji:'🎓' },
+      { id:'companeros', name:'Compañeros', emoji:'📚' },
+      { id:'amigos_u', name:'Amigos de la U', emoji:'🎓' }
+    ]
+  };
+
+  const subs = subcategories[currentCategory];
+  container.innerHTML = subs.map((sub, i) => `
+    <button class="subcategory-btn sub${(i%4)+1}" onclick="selectSubcategory('${sub.id}')">
+      <span class="emoji">${sub.emoji}</span>
+      <div class="info"><b>${sub.name}</b></div>
+    </button>
+  `).join('');
+}
+
+function selectSubcategory(subcategory) {
+  currentSubcategory = subcategory;
+  show('contentTypeScreen');
+  vibrate(20);
+}
+
+// ============================================================
+// 🎲 TIPO DE CONTENIDO
+// ============================================================
+function selectContentType(type) {
+  currentContentType = type;
+  renderPlayers();
+  show('playersScreen');
+  setTimeout(() => document.getElementById('playerInput').focus(), 400);
+  vibrate(20);
+}
+
+// ============================================================
+// 👤 JUGADORES
+// ============================================================
+function setGender(g) {
+  currentGender = g;
+  document.getElementById('genderM').classList.toggle('active', g==='M');
+  document.getElementById('genderF').classList.toggle('active', g==='F');
+  vibrate(10);
+}
+
+const playerInput = document.getElementById('playerInput');
+playerInput.addEventListener('keypress', e => { if (e.key === 'Enter') addPlayer(); });
+
+function addPlayer() {
+  const name = playerInput.value.trim();
+  if (!name || players.length >= 10) return;
+  if (players.some(p => p.name === name)) { playerInput.value=''; return; }
+  
+  players.push({
+    id: Date.now() + Math.random(),
+    name: name,
+    gender: currentGender,
+    skips: 2
+  });
+  
+  playerInput.value = '';
+  DB.savePlayers(players);
+  renderPlayers();
+  playerInput.focus();
+  vibrate(20);
+}
+
+function removePlayer(i) {
+  players.splice(i,1);
+  DB.savePlayers(players);
+  renderPlayers();
+  vibrate(15);
+}
+
+function clearPlayers() {
+  if (!players.length) return;
+  if (!confirm('¿Borrar a todos los jugadores guardados?')) return;
+  players = [];
+  DB.clearPlayers();
+  renderPlayers();
+  vibrate([30,50,30]);
+}
+
+function resetUsed() {
+  if (!confirm('Esto reinicia el historial de preguntas y retos ya vistos.\n\n¿Quieres permitir que vuelvan a salir?')) return;
+  usedChallenges = new Set();
+  DB.resetUsed();
+  vibrate(20);
+}
+
+function renderPlayers() {
+  const list = document.getElementById('playersList');
+  list.innerHTML = players.map((p,i) => `
+    <div class="player-chip ${p.gender==='M'?'male':'female'}">
+      <div class="info-chip">
+        <span class="gender-icon">${p.gender==='M'?'👨':'👩'}</span>
+        <b>${p.name}</b>
+        <span class="skips-badge">🥃 ${p.skips}</span>
+      </div>
+      <button class="del" onclick="removePlayer(${i})">✕</button>
+    </div>
+  `).join('');
+  document.getElementById('startBtn').disabled = players.length < 2;
+}
+
+// ============================================================
+// 🏷️ ETIQUETAS Y CAMBIO DE MODO EN PARTIDA
+// ============================================================
+const CAT_LABELS = {
+  familia:'👨‍👩‍👧‍👦 FAMILIA', amigos:'👯 AMIGOS',
+  pareja:'💑 PAREJA', universidad:'🎓 UNIVERSIDAD'
+};
+const SUB_LABELS = {
+  primos:'PRIMOS', familia:'FAMILIA',
+  amigos_hot:'AMIGOS 🔥', panas:'PANAS', mejores_amigos:'MEJORES AMIGOS',
+  pareja_hot:'PAREJA 🔥', conocerse_fondo:'CONOCERSE A FONDO', conocerse:'CONOCERSE',
+  companeros:'COMPAÑEROS', amigos_u:'AMIGOS DE LA U',
+  universidad_hot:'UNIVERSIDAD 🔥'
+};
+const CONTENT_LABELS = {
+  questions:'💬 SOLO PREGUNTAS', mixed:'🎲 ALEATORIO', actions:'🔥 SOLO RETOS'
+};
+
+function updateModeLabel() {
+  const label = document.getElementById('modeLabel');
+  if (!label) return;
+  label.textContent =
+    `${CAT_LABELS[currentCategory]} • ${SUB_LABELS[currentSubcategory]} • ${CONTENT_LABELS[currentContentType]}`;
+}
+
+function updateGameModeUI() {
+  document.querySelectorAll('#gameModeSwitch button').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.mode === currentContentType);
+  });
+}
+
+function setGameMode(type) {
+  if (!CONTENT_LABELS[type]) return;
+  currentContentType = type;
+  updateGameModeUI();
+  updateModeLabel();
+  vibrate(15);
+  DB.saveGame({
+    category: currentCategory,
+    subcategory: currentSubcategory,
+    contentType: currentContentType,
+    players: players,
+    updatedAt: new Date().toISOString()
+  });
+}
+
+// ============================================================
+// 🎮 INICIAR JUEGO
+// ============================================================
+function startGame() {
+  updateModeLabel();
+  updateGameModeUI();
+  renderCircle();
+  show('gameScreen');
+  vibrate([30,50,30]);
+  
+  DB.saveGame({
+    category: currentCategory,
+    subcategory: currentSubcategory,
+    contentType: currentContentType,
+    players: players,
+    startedAt: new Date().toISOString()
+  });
+}
+
+function renderCircle() {
+  const circle = document.getElementById('playersCircle');
+  circle.querySelectorAll('.player-spot').forEach(e=>e.remove());
+  const n = players.length;
+  const rect = circle.getBoundingClientRect();
+  const radius = Math.min(rect.width, rect.height)/2 - 40;
+  
+  players.forEach((p,i) => {
+    const angle = (i/n) * Math.PI * 2 - Math.PI/2;
+    const x = rect.width/2 + Math.cos(angle)*radius;
+    const y = rect.height/2 + Math.sin(angle)*radius;
+    const spot = document.createElement('div');
+    spot.className = `player-spot ${p.gender==='M'?'male':'female'}`;
+    spot.id = 'spot-'+i;
+    spot.style.left = x+'px';
+    spot.style.top = y+'px';
+    spot.innerHTML = `
+      <span class="gender-mini">${p.gender==='M'?'👨':'👩'}</span>
+      <span class="name-mini">${p.name}</span>
+      ${p.skips > 0 ? `<span class="skips-mini">${p.skips}</span>` : ''}
+    `;
+    circle.appendChild(spot);
+  });
+}
+
+// ============================================================
+// 🍾 GIRAR BOTELLA
+// ============================================================
+function spinBottle() {
+  if (isSpinning) return;
+  isSpinning = true;
+  document.getElementById('spinBtn').classList.add('hidden');
+  document.querySelectorAll('.player-spot').forEach(s=>s.classList.remove('selected'));
+
+  const bottle = document.getElementById('bottle');
+  const n = players.length;
+  const targetIndex = Math.floor(Math.random()*n);
+  const targetAngle = (targetIndex/n) * 360;
+  const spins = 5 + Math.floor(Math.random()*3);
+  const finalRotation = currentRotation + spins*360 + (360 - targetAngle) - (currentRotation % 360);
+  currentRotation = finalRotation;
+
+  bottle.style.transition = 'transform 4s cubic-bezier(.17,.67,.21,.99)';
+  bottle.style.transform = `rotate(${finalRotation}deg)`;
+  vibrate([50,100,50,100,150]);
+
+  setTimeout(() => {
+    document.getElementById('spot-'+targetIndex).classList.add('selected');
+    currentTargetIndex = targetIndex;
+    showResult(targetIndex);
+    isSpinning = false;
+    vibrate([100,50,100,50,200]);
+  }, 4100);
+}
+
+// ============================================================
+// 🎯 CONTENIDO DE RETOS Y PREGUNTAS
+// ============================================================
+const challenges = {
+  familia: {
+    primos: {
+      questions: [
+        "¿Cuál primo te cae mejor y por qué? 💖",
+        "¿Qué secreto guardas de tus primos? 🤫",
+        "¿Cuál es tu recuerdo favorito con tus primos? 🥰",
+        "¿A qué primo le tienes envidia? 😏",
+        "¿Qué es lo que más admiras de tus primos? 💫",
+        "¿Cuál primo crees que se casa primero? 💍",
+        "¿Qué primo te ha decepcionado alguna vez? 😔",
+        "¿Con qué primo te irías de viaje? ✈️"
+      ],
+      actions: [
+        "Cuenta tu mejor anécdota con un primo 😄",
+        "Imita a tu primo más divertido 🎭",
+        "Confiesa travesura que hiciste con tus primos 😈",
+        "Cuenta el viaje más loco con tus primos ✈️",
+        "Imita cómo habla tu primo favorito 🗣️",
+        "Cuenta tu primer día con tus primos 👶",
+        "Llama a un primo y dile algo bonito 📱",
+        "Baila con tu primo favorito 💃"
+      ]
+    },
+    familia: {
+      questions: [
+        "¿Qué es lo que más valoras de tu familia? 💝",
+        "¿Qué tradición familiar te gusta más? 🎄",
+        "¿A qué miembro de tu familia admiras más? 🌟",
+        "¿Qué cambiarías de tu infancia? ⏳",
+        "¿Cuál es tu recuerdo más feliz en familia? 🥰",
+        "¿Qué secreto nunca le has contado a tu familia? 🤐",
+        "¿Con qué familiar te llevas mejor? 💕",
+        "¿Qué le agradeces a tus padres? 🙏"
+      ],
+      actions: [
+        "Confiesa tu recuerdo favorito en familia 🥰",
+        "Imita a tu papá o mamá 🎭",
+        "Cuenta la vez que te portaste peor 😅",
+        "Cuenta tu travesura más grande de niño 👶",
+        "Imita a tu abuelo/a 👴",
+        "Confiesa algo que nunca le has dicho a tu familia 🤐",
+        "Abraza al familiar que tengas al lado 🤗",
+        "Canta una canción que te recuerda a tu familia 🎵"
+      ]
+    }
+  },
+  amigos: {
+    amigos_hot: {
+      questions: [
+        "¿Quién del grupo te parece más atractivo? 😍",
+        "¿Con quién tendrías una cita? 💘",
+        "¿A quién besarías si tuvieras que hacerlo? 💋",
+        "¿Qué parte del cuerpo de alguien del grupo te gusta? 👀",
+        "¿Quién te ha provocado más de una vez? 🔥",
+        "¿Con quién pasarías la noche? 🌙",
+        "¿Quién es el más hot del grupo? 💯",
+        "¿A quién le mandarías un mensaje atrevido ahora? 💌"
+      ],
+      actions: [
+        "Besa a la persona de tu derecha 💋",
+        "Susurra un secreto al oído de alguien 👂",
+        "Baila de forma sensual 20 segundos 🔥",
+        "Revela tu mayor fantasía 💭",
+        "Acaricia la cara de otro jugador ✋",
+        "Manda un mensaje atrevido a tu crush 💌",
+        "Dale un masaje de 30 segundos a alguien 💆",
+        "Enseña tu búsqueda más rara del celular 🔍"
+      ]
+    },
+    panas: {
+      questions: [
+        "¿Quién es el más dramático del grupo? 🎬",
+        "¿Cuál es el apodo más raro que le has puesto a alguien? 🤪",
+        "¿Quién del grupo te ha decepcionado? 😔",
+        "¿A quién le perdonarías todo? 🙏",
+        "¿Cuál pana crees que llegará más lejos? 🚀",
+        "¿Quién es el más tacaño del grupo? 💸",
+        "¿Con qué pana no podrías vivir sin? 💖",
+        "¿Quién del grupo es el más mentiroso? 🤥"
+      ],
+      actions: [
+        "Cuenta el mejor plan que han hecho juntos 🎉",
+        "Imita a tu pana más loco 🎭",
+        "Confiesa la peor borrachera con tus panas 🍺",
+        "Cuenta la vez que se metieron en problemas 😅",
+        "Imita cómo habla tu pana cuando está enojado 😠",
+        "Cuenta tu viaje más épico con los panas ✈️",
+        "Abraza a tu pana más querido 🤗",
+        "Brinda por la amistad 🥂"
+      ]
+    },
+    mejores_amigos: {
+      questions: [
+        "¿Qué es lo que más admiras de tu mejor amigo? 💖",
+        "¿Qué harías si tu mejor amigo te traiciona? 💔",
+        "¿Cuál es el recuerdo más bonito que tienen juntos? 🥰",
+        "¿Qué secreto nunca le has dicho a tu mejor amigo? 🤐",
+        "¿Por qué es tu mejor amigo y no otro? 🌟",
+        "¿Qué cambiarías de tu mejor amigo? 🔄",
+        "¿Cuánto tiempo crees que durará su amistad? ⏳",
+        "¿Qué es lo que más te molesta de tu mejor amigo? 😤"
+      ],
+      actions: [
+        "Confiesa tu secreto más oscuro 🤫",
+        "Cuenta la vez que tu mejor amigo te salvó 🦸",
+        "Imita a tu mejor amigo 🎭",
+        "Confiesa algo que nunca le has dicho a tu mejor amigo 🤐",
+        "Cuenta tu anécdota más vergonzosa con tu mejor amigo 😳",
+        "Dale un abrazo largo a tu mejor amigo 🤗",
+        "Manda un audio bonito a tu mejor amigo 📱",
+        "Tomen una selfie juntos ahora 🤳"
+      ]
+    }
+  },
+  pareja: {
+    pareja_hot: {
+      questions: [
+        "¿Qué te excita más de tu pareja? 🔥",
+        "¿Cuál es tu fantasía más íntima? 💭",
+        "¿Qué parte del cuerpo de tu pareja te vuelve loco? 👀",
+        "¿Qué lencería te gustaría que usara? 👙",
+        "¿Dónde te gustaría que te besara? 💋",
+        "¿Cuál ha sido el mejor momento íntimo juntos? 🌙",
+        "¿Qué te gustaría probar en la cama? 🔥",
+        "¿Qué es lo que más te prende de tu pareja? 💯"
+      ],
+      actions: [
+        "Besa apasionadamente a tu pareja 💋",
+        "Susurra algo sexy al oído 👂",
+        "Baila pegado con tu pareja 🔥",
+        "Revela tu fantasía más íntima 💭",
+        "Dale un masaje sensual a tu pareja 💆",
+        "Muestra tu parte favorita del cuerpo de tu pareja 👀",
+        "Imita cómo sería tu cita perfecta 💑",
+        "Confiesa qué te excita más de tu pareja 🔥"
+      ]
+    },
+    conocerse_fondo: {
+      questions: [
+        "¿Cuál es tu mayor miedo en la relación? 😨",
+        "¿Qué cambiarías de ti mismo? 🔄",
+        "¿Qué te hace sentir más amado? 💝",
+        "¿Cuál es tu mayor inseguridad? 😔",
+        "¿Qué sueñas para nuestro futuro? 🌟",
+        "¿Cuál ha sido tu momento más vulnerable? 💔",
+        "¿Qué necesitas que yo haga mejor? 🙏",
+        "¿Qué te duele de nuestra relación? 😢"
+      ],
+      actions: [
+        "Confiesa tu mayor miedo en la relación 😨",
+        "Dile 3 cosas que cambiarías de ti 🔄",
+        "Demuéstrale cómo te gusta que te amen 💝",
+        "Confiesa tu mayor inseguridad 😔",
+        "Escribe en un papel tu sueño juntos 🌟",
+        "Abraza a tu pareja por 30 segundos 🤗",
+        "Dile qué necesitas que haga mejor 🙏",
+        "Cuéntale lo que te duele 😢"
+      ]
+    },
+    conocerse: {
+      questions: [
+        "¿Cuál fue tu primera impresión de mí? 💭",
+        "¿Qué te enamoró de mí? 💖",
+        "¿Qué canción te recuerda a nosotros? 🎵",
+        "¿Cuál es tu recuerdo más bonito juntos? 📸",
+        "¿Qué te gusta hacer conmigo? 🎉",
+        "¿Qué te hace reír de mí? 😄",
+        "¿Qué planes tienes para nosotros? 🌈",
+        "¿Cuál es tu lugar favorito conmigo? 📍"
+      ],
+      actions: [
+        "Cuéntame tu primera impresión de mí 💭",
+        "Dime qué te enamoró de mí 💖",
+        "Cuenta tu cita favorita conmigo 🥰",
+        "Pon la canción que te recuerda a nosotros 🎵",
+        "Muéstrame tu foto favorita juntos 📸",
+        "Hazme reír ahora 😄",
+        "Cuéntame tus planes para nosotros 🌈",
+        "Abrázame por 20 segundos 🤗"
+      ]
+    }
+  },
+  universidad: {
+    companeros: {
+      questions: [
+        "¿Quién es el más estudioso del grupo? 🤓",
+        "¿Cuál es la materia que más odias? 📖",
+        "¿A qué compañero le tienes envidia? 😏",
+        "¿Quién crees que reprueba más? 📉",
+        "¿Con qué compañero te gustaría trabajar? 💼",
+        "¿Quién es el más divertido de la clase? 😂",
+        "¿A quién le copias más? 📝",
+        "¿Qué profesor te cae peor? 👨‍🏫"
+      ],
+      actions: [
+        "Cuenta tu anécdota más vergonzosa en clase 😳",
+        "Imita a tu profesor más estricto 👨‍🏫",
+        "Confiesa cuántas veces has faltado a clase 📚",
+        "Cuenta la vez que te quedaste dormido en clase 😴",
+        "Imita cómo habla tu compañero más raro 🗣️",
+        "Confiesa tu trampa más creativa en un examen 📝",
+        "Haz tu mejor cara de estudiante aburrido 😑",
+        "Cuenta tu excusa más creativa para faltar 🤥"
+      ]
+    },
+    amigos_u: {
+      questions: [
+        "¿Quién es el más fiestero del grupo? 🕺",
+        "¿Cuál es el plan más épico que han hecho? 🎊",
+        "¿Quién se emborracha más rápido? 🍺",
+        "¿Quién gasta más dinero en fiestas? 💸",
+        "¿A quién le gustaría tener un amigo de la U para siempre? 💖",
+        "¿Quién es el más responsable del grupo? 📚",
+        "¿Con quién te irías de viaje de egresados? ✈️",
+        "¿Quién tiene los mejores secretos? 🤫"
+      ],
+      actions: [
+        "Cuenta la mejor fiesta que han tenido 🎉",
+        "Imita a tu amigo de la U más loco 🎭",
+        "Confiesa la peor resaca después de una fiesta 🍺",
+        "Cuenta la vez que se quedaron estudiando toda la noche 📚",
+        "Imita cómo habla tu amigo cuando está estresado 😫",
+        "Confiesa tu secreto universitario más oscuro 🤫",
+        "Brinda por la amistad universitaria 🥂",
+        "Tomen una selfie grupal ahora 🤳"
+      ]
+    }
+  }
+};
+
+// Significados de palabras poco comunes: se muestran entre paréntesis.
+const GLOSARIO = {
+  "crush": "persona que te atrae",
+  "hot": "muy atractivo o intenso",
+  "PG": "apto para todo público",
+  "striptease": "quitarse la ropa bailando",
+  "strip tease": "quitarse la ropa bailando",
+  "flirt": "coquetear",
+  "flirteo": "coqueteo",
+  "pose": "postura",
+  "fetiche": "práctica u objeto que da placer",
+  "penumbra": "luz muy tenue",
+  "éxtasis": "placer muy intenso",
+  "extasis": "placer muy intenso",
+  "glow up": "cambio físico o personal notable",
+  "liquid courage": "valor que da el alcohol",
+  "gossip": "chisme",
+  "groupie": "fan que sigue a alguien",
+  "safe word": "palabra para parar el juego",
+  "playlist": "lista de canciones",
+  "snack": "comida ligera",
+  "sticker": "adhesivo de chat",
+  "enardecer": "encender el deseo o la pasión",
+  "despojo": "quitar la ropa o pertenencias",
+  "desinhibición": "soltar la vergüenza",
+  "ficha": "turno de girar o responder",
+  "blind": "a ciegas",
+  "cuarto oscuro": "lugar a oscuras para retos por minutos",
+  "tiento": "toque suave",
+  "sultry": "mirada lenta y sensual"
+};
+
+function anotarTexto(texto) {
+  if (!texto) return texto;
+  let out = texto;
+  for (const [termino, definicion] of Object.entries(GLOSARIO)) {
+    const esc = termino.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const re = new RegExp('(?<![\\wÁÉÍÓÚÑáéíóúñ])' + esc + '(?![\\wÁÉÍÓÚÑáéíóúñ])');
+    if (re.test(out)) {
+      out = out.replace(re, m => m + ' (' + definicion + ')');
+    }
+  }
+  return out;
+}
+
+// Adapta el texto al género del jugador (M/F). Las variantes llegan
+// como [base, hombre, mujer]; el resto son simplemente cadenas.
+function resolveChallenge(item, gender) {
+  if (Array.isArray(item)) {
+    const [ base, hombre, mujer ] = item;
+    if (gender === 'M') return hombre || base;
+    if (gender === 'F') return mujer || base;
+    return base;
+  }
+  return item;
+}
+
+function baseDe(item) { return Array.isArray(item) ? item[0] : item; }
+
+// Clave global: ninguna pregunta o reto se repite, ni siquiera entre nodos.
+function claveUsada(item) { return baseDe(item); }
+
+// Elige un ítem que no se haya mostrado nunca. Si el nodo ya se agotó,
+// devuelve null (no se repite nada). El jugador puede reiniciar a mano.
+function pickFrom(lista) {
+  const fresh = lista.filter(item => !usedChallenges.has(claveUsada(item)));
+  if (fresh.length === 0) return null;
+  const elegido = fresh[Math.floor(Math.random() * fresh.length)];
+  usedChallenges.add(claveUsada(elegido));
+  DB.saveUsed(usedChallenges);
+  return elegido;
+}
+
+function getChallengePool() {
+  const pool = challenges[currentCategory][currentSubcategory];
+  if (currentContentType === 'questions') {
+    const item = pickFrom(pool.questions);
+    return item === null ? null : { item, type: 'question' };
+  }
+  if (currentContentType === 'actions') {
+    const item = pickFrom(pool.actions);
+    return item === null ? null : { item, type: 'action' };
+  }
+  // Mezcla: combina verdades y retos sin repetir ninguno.
+  const combos = [
+    ...pool.questions.map(q => ({ text: q, type: 'question' })),
+    ...pool.actions.map(a => ({ text: a, type: 'action' }))
+  ];
+  const fresh = combos.filter(c => !usedChallenges.has(claveUsada(c.text)));
+  if (fresh.length === 0) return null;
+  const chosen = fresh[Math.floor(Math.random() * fresh.length)];
+  usedChallenges.add(claveUsada(chosen.text));
+  DB.saveUsed(usedChallenges);
+  return { item: chosen.text, type: chosen.type };
+}
+
+function showResult(idx) {
+  const player = players[idx];
+  const pick = getChallengePool();
+  if (!pick) {
+    alert('🎉 Ya viste todas las preguntas y retos de este nodo.\n\nElige otro nodo para seguir jugando. Nada se repetirá.');
+    show('subcategoryScreen');
+    return;
+  }
+  const { item, type } = pick;
+  currentChallenge = anotarTexto(resolveChallenge(item, player.gender));
+  currentChallengeType = type;
+  
+  const emojis = { familia:'👨‍👩‍👧‍👦', amigos:'👯', pareja:'💑', universidad:'🎓' };
+
+  document.getElementById('resultEmoji').textContent = emojis[currentCategory];
+  document.getElementById('resultTarget').textContent = `${player.gender==='M'?'👨':'👩'} ${player.name}`;
+  document.getElementById('resultChallenge').textContent = currentChallenge;
+  document.getElementById('skipsCount').textContent = `${player.skips}/2`;
+  
+  const badgeContainer = document.getElementById('contentTypeBadge');
+  if (type === 'question') {
+    badgeContainer.innerHTML = `<div class="content-type-badge badge-question">💬 Pregunta</div>`;
+  } else {
+    badgeContainer.innerHTML = `<div class="content-type-badge badge-action">🔥 Reto</div>`;
+  }
+
+  document.getElementById('modalAcceptBtn').innerHTML =
+    type === 'question' ? '✅ RESPONDER' : '✅ CUMPLIR RETO';
+  
+  const skipBtn = document.getElementById('skipBtn');
+  skipBtn.disabled = player.skips <= 0;
+  if (player.skips <= 0) {
+    skipBtn.innerHTML = '<span class="shot-icon">🚫</span><span>SIN SALTOS DISPONIBLES</span>';
+  } else {
+    skipBtn.innerHTML = '<span class="shot-icon">🥃</span><span>SALTAR (Tomar Shot)</span>';
+  }
+  
+  document.getElementById('resultModal').classList.add('show');
+  launchConfetti();
+}
+
+function closeModal() {
+  document.getElementById('resultModal').classList.remove('show');
+  document.getElementById('spinBtn').classList.remove('hidden');
+  document.querySelectorAll('.player-spot').forEach(s=>s.classList.remove('selected'));
+  
+  if (currentTargetIndex >= 0) {
+    DB.savePlayerStats(players[currentTargetIndex].id, {
+      challengeCompleted: true,
+      challenge: currentChallenge,
+      type: currentChallengeType,
+      timestamp: new Date().toISOString()
+    });
+  }
+}
+
+function skipChallenge() {
+  if (currentTargetIndex < 0) return;
+  const player = players[currentTargetIndex];
+  
+  if (player.skips <= 0) {
+    alert('¡Ya no te quedan saltos! Debes cumplir el reto 😈');
+    return;
+  }
+  
+  if (!confirm(`🥃 ${player.name} debe tomar un SHOT para saltar el reto.\n\n¿Ya lo hizo?`)) {
+    return;
+  }
+  
+  player.skips--;
+  
+  DB.savePlayerStats(player.id, {
+    challengeSkipped: true,
+    challenge: currentChallenge,
+    type: currentChallengeType,
+    shotsTaken: 2 - player.skips,
+    timestamp: new Date().toISOString()
+  });
+  DB.saveGame({
+    category: currentCategory,
+    subcategory: currentSubcategory,
+    contentType: currentContentType,
+    players: players,
+    updatedAt: new Date().toISOString()
+  });
+  
+  vibrate([200,100,200,100,300]);
+  
+  document.getElementById('resultModal').classList.remove('show');
+  renderCircle();
+  
+  setTimeout(() => {
+    alert(`🥃 ¡${player.name} tomó su shot!\n\nLe quedan ${player.skips} salto(s).\n\nGira de nuevo 🍾`);
+    document.getElementById('spinBtn').classList.remove('hidden');
+    document.querySelectorAll('.player-spot').forEach(s=>s.classList.remove('selected'));
+  }, 300);
+}
+
+// ============================================================
+// 🎊 CONFETI
+// ============================================================
+function launchConfetti() {
+  const colors = ['#ff00cc','#ffcc00','#00ffcc','#ff3366','#ffffff'];
+  for (let i=0; i<30; i++) {
+    const c = document.createElement('div');
+    c.className = 'confetti';
+    c.style.left = Math.random()*100 + '%';
+    c.style.background = colors[Math.floor(Math.random()*colors.length)];
+    c.style.animation = `confettiFall ${2+Math.random()*2}s linear forwards`;
+    c.style.animationDelay = Math.random()*0.5 + 's';
+    c.style.borderRadius = Math.random()>.5 ? '50%' : '0';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(), 4500);
+  }
+}
+
+// ============================================================
+// 📳 VIBRACIÓN
+// ============================================================
+function vibrate(p) { if (navigator.vibrate) navigator.vibrate(p); }
+
+// ============================================================
+// 🚪 SALIR
+// ============================================================
+function confirmExit() {
+  if (confirm('¿Salir de la partida? Se perderá el progreso.')) {
+    DB.saveGame({ status: 'abandoned', endedAt: new Date().toISOString() });
+    show('categoryScreen');
+  }
+}
+
+// ============================================================
+// 📐 RESPONSIVE
+// ============================================================
+let resizeTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    if (document.getElementById('gameScreen').classList.contains('active')) {
+      renderCircle();
+    }
+  }, 150);
+});
+
+window.addEventListener('orientationchange', () => {
+  setTimeout(() => {
+    if (document.getElementById('gameScreen').classList.contains('active')) {
+      renderCircle();
+    }
+  }, 300);
+});
+
+// ============================================================
+// ✅ INICIALIZACIÓN SEGURA
+// ============================================================
+window.addEventListener('DOMContentLoaded', () => {
+  console.log('✅ App cargada correctamente');
+  renderPlayers(); // restaura los jugadores guardados
+});
+
+// ============================================================
+// 📲 INSTALACIÓN COMO APP (PWA)
+// ============================================================
+const installBtn = document.getElementById('installBtn');
+let deferredInstallPrompt = null;
+const isStandalone = window.matchMedia('(display-mode: standalone)').matches
+  || window.navigator.standalone === true;
+const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent)
+  || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const isMobile = /android|iphone|ipad|ipod|mobile/i.test(navigator.userAgent) || isIOS;
+
+if (!isStandalone && installBtn && isMobile) {
+  installBtn.hidden = false;
+}
+
+window.addEventListener('beforeinstallprompt', (event) => {
+  event.preventDefault();
+  deferredInstallPrompt = event;
+  if (installBtn) installBtn.hidden = false;
+});
+
+if (installBtn) {
+  installBtn.addEventListener('click', async () => {
+    if (deferredInstallPrompt) {
+      deferredInstallPrompt.prompt();
+      await deferredInstallPrompt.userChoice;
+      deferredInstallPrompt = null;
+      installBtn.hidden = true;
+      return;
+    }
+    if (isIOS) {
+      alert('Para instalar en iPhone:\n\n1. Toca el botón Compartir de Safari.\n2. Elige “Agregar a pantalla de inicio”.\n3. Confirma con “Agregar”.');
+    } else {
+      alert('Para instalar: abre el menú del navegador y elige “Instalar app” o “Agregar a pantalla de inicio”.');
+    }
+  });
+}
+
+window.addEventListener('appinstalled', () => {
+  if (installBtn) installBtn.hidden = true;
+  deferredInstallPrompt = null;
+});
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch((err) => {
+      console.warn('Service worker no registrado:', err);
+    });
+  });
+}
+</script>
+</body>
+</html>
