@@ -39,7 +39,7 @@ Usamos [Conventional Commits](https://www.conventionalcommits.org/es/):
 
 ```text
 feat(contenido): agregar 40 retos de oficina
-fix(pwa): corregir el botón de instalación en iOS
+fix(android): corregir la orientación de la pantalla de inicio
 docs(readme): documentar el flujo de ramas
 chore(deps): actualizar acciones de GitHub
 ci: verificar el contenido en cada PR
@@ -74,9 +74,11 @@ node tools/verify.js
 ## Estilo de código
 
 - Python: biblioteca estándar, funciones pequeñas y mensajes en español.
-- JavaScript: vanilla, sin frameworks ni dependencias de runtime.
+- JavaScript: vanilla, sin frameworks de runtime. Capacitor solo se usa para
+  empaquetar el APK.
 - HTML/CSS: mantener la estética y las variables CSS existentes.
 - No agregar analítica, cookies, backend ni servicios externos.
+- No versionar `android/`, `android-assets/`, APK, keystores ni contraseñas.
 
 ## Checklist del Pull Request
 
@@ -84,9 +86,10 @@ node tools/verify.js
 - [ ] `python3 tools/build.py` se ejecutó.
 - [ ] `python3 tools/verify.py` pasa.
 - [ ] `node tools/verify.js` pasa.
-- [ ] Probé el flujo en un navegador (idealmente móvil).
-- [ ] No incluí tokens, credenciales ni datos personales.
-- [ ] Actualicé `CHANGELOG.md` si corresponde.
+- [ ] Probé el flujo en la vista web y, si toqué el empaquetado, compilé el
+      APK con `./gradlew assembleDebug`.
+- [ ] No incluí tokens, credenciales, keystores ni datos personales.
+- [ ] Actualicé `CHANGELOG.md` y `package.json` si corresponde.
 
 ## Reportar problemas
 

@@ -1,3 +1,4 @@
-# Solo necesarias para regenerar los iconos (tools/make_icons.py).
+# Solo necesarias para regenerar iconos web y Android
+# (tools/make_icons.py y tools/make_android_assets.py).
 Pillow>=10.0
 numpy>=1.26

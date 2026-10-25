@@ -95,7 +95,7 @@ def verificar_bd() -> None:
 
 
 def verificar_app() -> None:
-    print("Aplicación PWA")
+    print("Aplicación web y APK")
     index = APP / "index.html"
     check(index.exists(), "Falta app/index.html")
     if not index.exists():
@@ -107,6 +107,8 @@ def verificar_app() -> None:
     check("data:image/webp;base64," in html, "Falta el logo incrustado")
     check('rel="manifest"' in html, "Falta el enlace al manifest")
     check("serviceWorker" in html, "Falta el registro del service worker")
+    check("isNativeApp" in html, "Falta la detección de la app nativa")
+    check("!isNativeApp" in html, "El service worker no está desactivado en la app nativa")
     check("Digital Assets" in html, "Falta el crédito de Digital Assets")
     check("INSTALAR APP" in html, "Falta el botón de instalación")
     check("Digital Accent" not in html, "Quedó el nombre antiguo Digital Accent")
@@ -127,15 +129,72 @@ def verificar_app() -> None:
             check((APP / ruta[2:]).exists(), f"El service worker referencia {ruta} y no existe")
 
 
+def verificar_android() -> None:
+    print("Empaquetado Android")
+    paquete_path = ROOT / "package.json"
+    check(paquete_path.exists(), "Falta package.json")
+    if paquete_path.exists():
+        paquete = json.loads(paquete_path.read_text(encoding="utf-8"))
+        check(paquete.get("name") == "quien-se-atreve", "Nombre de package.json incorrecto")
+        check(
+            bool(re.fullmatch(r"\d+\.\d+\.\d+", str(paquete.get("version", "")))),
+            "Versión de package.json inválida",
+        )
+        dependencias = {**paquete.get("dependencies", {}), **paquete.get("devDependencies", {})}
+        for dependencia in ("@capacitor/core", "@capacitor/android", "@capacitor/cli"):
+            check(dependencia in dependencias, f"Falta {dependencia} en package.json")
+        check(
+            paquete.get("scripts", {}).get("android:release") == "cd android && ./gradlew assembleRelease",
+            "Falta el script android:release",
+        )
+
+    config_path = ROOT / "capacitor.config.json"
+    check(config_path.exists(), "Falta capacitor.config.json")
+    if config_path.exists():
+        config = json.loads(config_path.read_text(encoding="utf-8"))
+        check(config.get("appId") == "com.digitalassets.quienseatreve", "appId de Capacitor incorrecto")
+        check(config.get("appName") == "¿Quién se atreve?", "appName de Capacitor incorrecto")
+        check(config.get("webDir") == "app", "webDir de Capacitor incorrecto")
+
+    for ruta in (
+        "tools/make_android_assets.py",
+        "tools/prepare_android.py",
+        ".github/workflows/android.yml",
+    ):
+        check((ROOT / ruta).exists(), f"Falta {ruta}")
+
+    workflow = ROOT / ".github" / "workflows" / "android.yml"
+    if workflow.exists():
+        texto = workflow.read_text(encoding="utf-8")
+        for fragmento in ("assembleRelease", "apksigner", "softprops/action-gh-release"):
+            check(fragmento in texto, f"android.yml no incluye {fragmento}")
+
+    indice = ROOT / "app" / "index.html"
+    if indice.exists():
+        html = indice.read_text(encoding="utf-8")
+        check("Capacitor" in html, "La app no detecta Capacitor")
+        check("isNativeApp" in html, "La app no detecta el modo nativo")
+
+    readme = ROOT / "README.md"
+    if readme.exists():
+        texto = readme.read_text(encoding="utf-8")
+        check("APK" in texto, "El README no menciona el APK")
+        check("releases/latest" in texto, "El README no enlaza a las Releases")
+
+    check("android/" in (ROOT / ".gitignore").read_text(encoding="utf-8"), "android/ no está ignorado")
+    check("*.p12" in (ROOT / ".gitignore").read_text(encoding="utf-8"), "Las claves PKCS12 no están ignoradas")
+
+
 def main() -> None:
     print("Verificando ¿Quién se atreve?\n")
     verificar_bd()
     verificar_app()
+    verificar_android()
     print()
     if errores:
         print(f"❌ {len(errores)} error(es)")
         sys.exit(1)
-    print("✅ Base de datos y PWA correctas")
+    print("✅ Base de datos, web y empaquetado Android correctos")
 
 
 if __name__ == "__main__":

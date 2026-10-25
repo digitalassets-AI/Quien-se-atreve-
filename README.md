@@ -11,14 +11,17 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/digitalassets-AI/Quien-se-atreve-/releases/latest">
+    <img alt="Descargar APK" src="https://img.shields.io/badge/APK-Android-3ddc84?logo=android&logoColor=white">
+  </a>
+  <a href="https://github.com/digitalassets-AI/Quien-se-atreve-/actions/workflows/android.yml">
+    <img alt="Android APK" src="https://github.com/digitalassets-AI/Quien-se-atreve-/actions/workflows/android.yml/badge.svg?branch=main">
+  </a>
   <a href="https://github.com/digitalassets-AI/Quien-se-atreve-/actions/workflows/ci.yml">
     <img alt="CI" src="https://github.com/digitalassets-AI/Quien-se-atreve-/actions/workflows/ci.yml/badge.svg?branch=main">
   </a>
-  <a href="https://github.com/digitalassets-AI/Quien-se-atreve-/actions/workflows/pages.yml">
-    <img alt="Deploy" src="https://github.com/digitalassets-AI/Quien-se-atreve-/actions/workflows/pages.yml/badge.svg?branch=main">
-  </a>
   <img alt="18+" src="https://img.shields.io/badge/18%2B-solo%20adultos-ff0066">
-  <img alt="PWA" src="https://img.shields.io/badge/PWA-instalable-5a0fc8">
+  <img alt="Android 6+" src="https://img.shields.io/badge/Android-6.0%2B-3ddc84">
   <img alt="Offline" src="https://img.shields.io/badge/offline-s%C3%AD-00a86b">
   <img alt="Licencia MIT" src="https://img.shields.io/badge/c%C3%B3digo-MIT-ffcc00">
 </p>
@@ -28,41 +31,58 @@
 > Assets no se responsabiliza de nada** de lo que ocurra antes, durante o
 > después del juego.
 
-## Demo
+## Descargar e instalar el APK
 
-La app se publica automáticamente en **GitHub Pages** al hacer merge a `main`:
+La distribución oficial es un **APK para Android**. No es un acceso directo al
+navegador: la app, el logo y los 4.432 ítems viajan dentro del archivo y
+funcionan sin conexión.
 
-```text
-https://digitalassets-AI.github.io/Quien-se-atreve-/
-```
+1. Entra a **[Releases](https://github.com/digitalassets-AI/Quien-se-atreve-/releases/latest)**
+   desde el teléfono.
+2. Descarga el archivo `quien-se-atreve-v1.1.0.apk`.
+3. Ábrelo desde la notificación o desde **Archivos → Descargas**.
+4. Si Android lo solicita, permite **instalar apps desconocidas** para el
+   navegador o el administrador de archivos que estés usando.
+5. Toca **Instalar** y luego **Abrir**.
 
-Si el enlace aún no responde, activa Pages en **Settings → Pages → GitHub
-Actions** y ejecuta el workflow **Deploy PWA to GitHub Pages**.
+Requisitos y notas:
+
+- **Android 6.0 (API 23) o superior.**
+- No requiere Chrome, cuenta, registro ni conexión después de instalar.
+- Para actualizar, descarga el APK nuevo e instálalo encima del anterior. La
+  firma es la misma, así que se conservan los jugadores y el historial.
+- Si desinstalas la app, Android borra sus datos locales.
+- **iPhone/iPad:** un APK no se puede instalar en iOS. Para ese caso haría falta
+  una IPA firmada con una cuenta de desarrollador de Apple; no forma parte de
+  esta distribución.
+
+> La carpeta `app/` también se publica como **vista previa web** para desarrollo:
+> `https://digitalassets-ai.github.io/Quien-se-atreve-/`.
+> Esa vista previa no es la forma oficial de instalar el juego.
 
 ## Tabla de contenido
 
 - [¿Qué es?](#qué-es)
 - [Características](#características)
-- [Instalar en el celular](#instalar-en-el-celular)
 - [Contenido](#contenido)
-- [Modelo de ramas](#modelo-de-ramas)
-- [Flujo de trabajo](#flujo-de-trabajo)
-- [Convención de commits](#convención-de-commits)
-- [CI/CD](#cicd)
-- [Estructura del proyecto](#estructura-del-proyecto)
-- [¿Por qué solo hay una base de datos?](#por-qué-solo-hay-una-base-de-datos)
+- [Arquitectura](#arquitectura)
 - [Desarrollo](#desarrollo)
+- [Compilar el APK](#compilar-el-apk)
+- [Firma y actualizaciones](#firma-y-actualizaciones)
+- [Publicar una versión](#publicar-una-versión)
+- [CI/CD](#cicd)
+- [Modelo de ramas](#modelo-de-ramas)
 - [Base de datos](#base-de-datos)
-- [Publicar en GitHub Pages](#publicar-en-github-pages)
-- [Contribuir](#contribuir)
 - [Privacidad y seguridad](#privacidad-y-seguridad)
+- [Contribuir](#contribuir)
 - [Licencia y créditos](#licencia-y-créditos)
 
 ## ¿Qué es?
 
-Una app web instalable (PWA) con **4.432 verdades y retos** repartidos en tres
-categorías y nueve subcategorías. Funciona sin conexión, guarda los jugadores en
-el dispositivo y no repite contenido dentro de una partida.
+Una app Android con **4.432 verdades y retos** repartidos en tres categorías y
+nueve subcategorías. El contenido se empaqueta dentro del APK con
+[Capacitor](https://capacitorjs.com/) y se ejecuta en un WebView local, sin
+servidor y sin depender de una página externa.
 
 - **Amigos:** panas, mejores amigos y amigos 🔥
 - **Pareja:** conocerse, conocerse a fondo y pareja 🔥
@@ -78,39 +98,15 @@ el dispositivo y no repite contenido dentro de una partida.
 
 | Característica | Detalle |
 |---|---|
-| Instalable | PWA con manifest, iconos y pantalla completa |
-| Offline | Service worker con caché del app shell |
-| Sin backend | Todo se ejecuta en el navegador |
+| Distribución | APK Android firmado, generado por GitHub Actions |
+| Empaquetado | Capacitor 7 + WebView local; no es un navegador externo |
+| Offline | Todo el contenido y los recursos están dentro del APK |
+| Sin backend | No hay cuentas, servidor ni base de datos remota |
 | Persistencia | `localStorage`: jugadores, partida e historial |
 | Anti-repetición | Historial global por texto base, persistente |
 | Responsive | Diseñada para teléfonos, tablets y escritorio |
-| Accesibilidad | Lighthouse 100 en accesibilidad, buenas prácticas y SEO |
 | Privacidad | Sin analítica, sin cuentas y sin envío de datos |
-
-## Instalar en el celular
-
-La app se instala desde el navegador. No hace falta tienda de aplicaciones ni
-archivo APK.
-
-### Android
-
-1. Abre la URL publicada en **Chrome**.
-2. Toca el botón **📲 INSTALAR APP** o el menú **⋮ → Instalar app**.
-3. Confirma. El icono aparecerá en tu pantalla de inicio.
-
-### iPhone / iPad
-
-1. Abre la URL publicada en **Safari**.
-2. Toca **Compartir**.
-3. Elige **Agregar a pantalla de inicio** y confirma.
-
-Después de la primera carga, la app abre sin conexión. En Android, Chrome
-mostrará el aviso de instalación; en iPhone, el botón de la app explica los
-pasos.
-
-> **¿APK?** Si necesitas un archivo `.apk`, se puede generar con
-> [PWABuilder](https://www.pwabuilder.com/) a partir de la URL publicada o con un
-> wrapper de Capacitor. La PWA es la vía recomendada para Android e iOS.
+| Vista previa web | `app/` se publica en GitHub Pages solo para desarrollo |
 
 ## Contenido
 
@@ -134,13 +130,229 @@ pasos.
 - Los textos con variante de género usan `["base", "hombre", "mujer"]` y se
   resuelven según el jugador.
 
+## Arquitectura
+
+```text
+Quien-se-atreve-/
+├── app/                         # Web assets que se empaquetan en el APK
+│   ├── index.html               # App final, autónoma y con el logo incrustado
+│   ├── manifest.webmanifest     # Vista previa web (no se usa dentro del APK)
+│   ├── sw.js                    # Service worker de la vista previa
+│   └── icons/                   # Iconos de la vista previa
+├── assets/
+│   └── logo.webp                # Logo original con transparencia
+├── data/
+│   ├── hot/                     # 18 CSV (6 niveles × 3 juegos)
+│   ├── extra/                   # 6 CSV de los nodos no-hot
+│   └── glosario.csv             # 72 términos
+├── database/
+│   └── quien_se_atreve.sqlite   # Única base de datos del proyecto
+├── src/
+│   └── interfaz_base.html       # Plantilla editable de la interfaz
+├── tools/
+│   ├── build.py                 # Reconstruye BD + app
+│   ├── crear_bd.py              # CSV → SQLite
+│   ├── montar_interfaz.py       # SQLite + CSV + logo → app/index.html
+│   ├── make_icons.py            # Genera los iconos web desde el logo
+│   ├── make_android_assets.py   # Genera iconos y splash de Android
+│   ├── prepare_android.py       # Nombre, versión, orientación y firma
+│   ├── verify.py                # Verifica BD, web, APK y archivos
+│   ├── verify.js                # Verifica los 4.432 ítems finales
+│   └── requirements.txt         # Pillow y NumPy para regenerar imágenes
+├── .github/
+│   ├── workflows/
+│   │   ├── ci.yml               # Verificación del contenido
+│   │   ├── android.yml          # Build y Release del APK
+│   │   └── pages.yml            # Vista previa web opcional
+│   ├── ISSUE_TEMPLATE/
+│   └── pull_request_template.md
+├── capacitor.config.json        # Configuración de Capacitor
+├── package.json                 # Dependencias del empaquetado Android
+├── CHANGELOG.md
+├── CODE_OF_CONDUCT.md
+├── CONTRIBUTING.md
+├── LICENSE
+├── README.md
+└── SECURITY.md
+```
+
+`android/` y `android-assets/` **no se versionan**: se generan durante el build.
+El APK final se descarga desde **Releases**, no desde el código fuente.
+
+## Desarrollo
+
+Requisitos para trabajar con el contenido y la vista web:
+
+- **Python 3.10+**
+- **Node.js 20+** (probado con Node 22)
+- **Pillow** y **NumPy** solo si se regeneran imágenes
+
+```bash
+# Reconstruir la base de datos y la app final
+python3 tools/build.py
+
+# Verificar integridad, contenido y configuración de Android
+python3 tools/verify.py
+node tools/verify.js
+
+# Regenerar iconos web si cambia el logo
+python3 -m pip install -r tools/requirements.txt
+python3 tools/make_icons.py
+```
+
+Para probar la vista web en local:
+
+```bash
+cd app
+python3 -m http.server 8765
+# Abre http://localhost:8765
+```
+
+La vista web necesita `http://` o `https://` para registrar el service worker.
+Dentro del APK no se registra service worker: los archivos ya están empaquetados
+y el juego funciona offline de forma nativa.
+
+## Compilar el APK
+
+El build local necesita **JDK 21** y el **Android SDK 35**. Android Studio no es
+obligatorio si ya tienes el SDK y Gradle.
+
+```bash
+npm install
+
+# Crear el proyecto Android y copiar los web assets
+npx cap add android
+npx cap sync android
+
+# Generar iconos y splash desde assets/logo.webp
+python3 -m pip install -r tools/requirements.txt
+python3 tools/make_android_assets.py
+cp -R android-assets/. android/app/src/main/res/
+
+# Nombre, versión, orientación y colores del sistema
+python3 tools/prepare_android.py
+
+# APK de depuración (instalable, pero sin firma de producción)
+cd android
+./gradlew assembleDebug
+```
+
+El APK de depuración queda en:
+
+```text
+android/app/build/outputs/apk/debug/app-debug.apk
+```
+
+Para un build de producción firmado, define las variables y coloca la clave:
+
+```bash
+export ANDROID_KEYSTORE_PASSWORD="..."
+export ANDROID_KEY_ALIAS="digitalassets"
+export ANDROID_KEY_PASSWORD="..."
+
+cp /ruta/segura/release-key.p12 android/app/release-key.p12
+python3 tools/prepare_android.py
+cd android
+./gradlew assembleRelease
+```
+
+El APK firmado queda en:
+
+```text
+android/app/build/outputs/apk/release/app-release.apk
+```
+
+> No versiones `android/`, `release-key.p12`, `*.jks`, `*.keystore` ni las
+> contraseñas. El `.gitignore` ya excluye esos archivos.
+
+## Firma y actualizaciones
+
+El workflow de GitHub Actions firma el APK de producción con una clave estable
+guardada en **Settings → Secrets and variables → Actions**:
+
+| Secreto | Contenido |
+|---|---|
+| `ANDROID_KEYSTORE_BASE64` | Keystore PKCS12 codificado en Base64 |
+| `ANDROID_KEYSTORE_PASSWORD` | Contraseña del keystore |
+| `ANDROID_KEY_ALIAS` | Alias de la clave (`digitalassets`) |
+| `ANDROID_KEY_PASSWORD` | Contraseña de la clave |
+
+La clave es la misma en cada versión. Eso permite instalar una actualización
+encima de la app anterior sin desinstalarla y conservar los datos. Si la clave
+se pierde o se cambia, Android rechazará la actualización por diferencia de
+firma; en ese caso habría que desinstalar la versión anterior.
+
+**No borres esos secretos.** Si necesitas rotar la firma, planifica una nueva
+instalación limpia o un cambio de `appId`.
+
+## Publicar una versión
+
+1. Actualiza el contenido y reconstruye:
+
+   ```bash
+   python3 tools/build.py
+   python3 tools/verify.py
+   node tools/verify.js
+   ```
+
+2. Sube la versión en `package.json` y documenta el cambio en `CHANGELOG.md`.
+3. Haz commit y crea el tag:
+
+   ```bash
+   git add .
+   git commit -m "release: preparar 1.1.0"
+   git tag -a v1.1.0 -m "Versión 1.1.0"
+   git push origin main --tags
+   ```
+
+4. El workflow **Android APK** se ejecuta con el tag, compila el APK firmado y
+   crea la Release con el archivo descargable.
+
+El `versionCode` se calcula a partir del tag: `v1.1.0 → 10100`,
+`v1.1.1 → 10101`, `v1.2.0 → 10200`. Debe ser siempre mayor que el anterior.
+
+También puedes ejecutar el workflow manualmente desde **Actions → Android APK →
+Run workflow** para probar el build. En ese caso se sube como artifact, pero no
+se crea una Release.
+
+## CI/CD
+
+| Workflow | Cuándo se ejecuta | Qué hace |
+|---|---|---|
+| `ci.yml` | Push a `main`/`develop` y Pull Requests | Reconstruye, verifica contenido y comprueba que `app/index.html` esté actualizado |
+| `android.yml` | Tags `v*` y ejecución manual | Crea el proyecto Capacitor, genera iconos/splash, firma y publica el APK |
+| `pages.yml` | Push a `main` o ejecución manual | Publica `app/` como vista previa web en GitHub Pages |
+
+Comandos que ejecuta el CI:
+
+```bash
+python3 tools/build.py
+python3 tools/verify.py
+node tools/verify.js
+git diff --exit-code -- app
+```
+
+El workflow de Android requiere los cuatro secretos de firma. Sin ellos, el
+build de producción se detiene con un mensaje claro; para pruebas locales usa
+`./gradlew assembleDebug`.
+
+### Proteger `main`
+
+En **Settings → Branches → Add branch protection rule**:
+
+1. Patrón: `main`.
+2. Activar **Require a pull request before merging**.
+3. Activar **Require status checks to pass** y seleccionar **CI / Verify**.
+4. Activar **Do not allow bypassing the above settings**.
+
 ## Modelo de ramas
 
-El repositorio usa un flujo **Git Flow simplificado**:
+Mientras la app se distribuya desde una sola línea, `main` es la rama de
+producción. Cuando empiecen las actualizaciones se activará el flujo completo:
 
-| Rama | Propósito | ¿Despliega? |
+| Rama | Propósito | ¿Publica APK? |
 |---|---|:---:|
-| `main` | Producción estable | ✅ Sí |
+| `main` | Producción estable y tags | ✅ Sí |
 | `develop` | Integración de la próxima versión | ❌ No |
 | `feature/*` | Nuevas funciones o contenido | ❌ No |
 | `fix/*` | Correcciones no urgentes | ❌ No |
@@ -163,215 +375,6 @@ Reglas:
 4. `develop` se integra a `main` solo para publicar una versión.
 5. Los tags de versión se crean sobre `main` (`v1.0.0`, `v1.1.0`, ...).
 
-## Flujo de trabajo
-
-### Nueva función o contenido
-
-```bash
-git switch develop
-git pull origin develop
-git switch -c feature/nueva-subcategoria
-
-# editar datos, interfaz o documentación
-python3 tools/build.py
-python3 tools/verify.py
-node tools/verify.js
-
-git add .
-git commit -m "feat(contenido): agregar subcategoría de oficina"
-git push -u origin feature/nueva-subcategoria
-```
-
-Abre un Pull Request hacia `develop`.
-
-### Corrección normal
-
-```bash
-git switch develop
-git switch -c fix/boton-instalar-ios
-# corregir
-git commit -am "fix(pwa): mostrar instrucciones correctas en iOS"
-git push -u origin fix/boton-instalar-ios
-```
-
-### Publicar una versión
-
-```bash
-git switch develop
-git pull origin develop
-git switch -c release/1.1.0
-
-# actualizar CHANGELOG.md y probar
-git commit -am "chore(release): preparar 1.1.0"
-
-git switch main
-git merge --no-ff release/1.1.0
-git tag -a v1.1.0 -m "Versión 1.1.0"
-git push origin main --tags
-
-git switch develop
-git merge --no-ff main
-git push origin develop
-```
-
-### Hotfix urgente
-
-```bash
-git switch main
-git switch -c hotfix/error-critico
-# corregir
-git commit -am "fix: corregir error crítico"
-git switch main
-git merge --no-ff hotfix/error-critico
-git tag -a v1.0.2 -m "Versión 1.0.2"
-git push origin main --tags
-git switch develop
-git merge --no-ff main
-git push origin develop
-```
-
-## Convención de commits
-
-Se usa [Conventional Commits](https://www.conventionalcommits.org/es/):
-
-| Prefijo | Uso |
-|---|---|
-| `feat:` | Nueva función o contenido |
-| `fix:` | Corrección de un error |
-| `docs:` | Solo documentación |
-| `style:` | Formato sin cambios de lógica |
-| `refactor:` | Reestructuración sin cambiar comportamiento |
-| `test:` | Pruebas |
-| `chore:` | Mantenimiento, build o dependencias |
-| `ci:` | Cambios en GitHub Actions |
-
-Ejemplos:
-
-```text
-feat(pwa): agregar botón de instalación
-fix(contenido): corregir pregunta duplicada
-docs(readme): documentar modelo de ramas
-ci: verificar el contenido en cada pull request
-```
-
-## CI/CD
-
-| Workflow | Cuándo se ejecuta | Qué hace |
-|---|---|---|
-| `ci.yml` | Push a `main`/`develop` y Pull Requests | Reconstruye, verifica contenido y comprueba que `app/index.html` esté actualizado |
-| `pages.yml` | Push a `main` o ejecución manual | Publica `app/` en GitHub Pages |
-
-Comandos que ejecuta el CI:
-
-```bash
-python3 tools/build.py
-python3 tools/verify.py
-node tools/verify.js
-git diff --exit-code -- app
-```
-
-Si el build genera un `app/index.html` distinto al commiteado, el CI falla. Eso
-evita publicar una app desactualizada respecto de los CSV o la base de datos.
-
-### Proteger `main`
-
-En **Settings → Branches → Add branch protection rule**:
-
-1. Patrón: `main`.
-2. Activar **Require a pull request before merging**.
-3. Activar **Require status checks to pass** y seleccionar **CI / verify**.
-4. Activar **Do not allow bypassing the above settings**.
-5. Repetir una regla más flexible para `develop`.
-
-## Estructura del proyecto
-
-```text
-Quien-se-atreve-/
-├── app/                         # Sitio que se publica (PWA)
-│   ├── index.html               # App final, autónoma y con el logo incrustado
-│   ├── manifest.webmanifest
-│   ├── sw.js                    # Service worker (funciona offline)
-│   └── icons/                   # Iconos 192/512, maskable, Apple y favicon
-├── assets/
-│   └── logo.webp                # Logo original con transparencia
-├── data/
-│   ├── hot/                     # 18 CSV (6 niveles × 3 juegos)
-│   ├── extra/                   # 6 CSV de los nodos no-hot
-│   └── glosario.csv             # 72 términos
-├── database/
-│   └── quien_se_atreve.sqlite   # Única base de datos del proyecto
-├── src/
-│   └── interfaz_base.html       # Plantilla editable de la interfaz
-├── tools/
-│   ├── build.py                 # Reconstruye BD + app
-│   ├── crear_bd.py              # CSV → SQLite
-│   ├── montar_interfaz.py       # SQLite + CSV + logo → app/index.html
-│   ├── make_icons.py            # Genera los iconos desde el logo
-│   ├── verify.py                # Verifica BD, PWA y archivos
-│   ├── verify.js                # Verifica los 4.432 ítems finales
-│   └── requirements.txt         # Solo para regenerar iconos
-├── .github/
-│   ├── workflows/
-│   │   ├── ci.yml
-│   │   └── pages.yml
-│   ├── ISSUE_TEMPLATE/
-│   └── pull_request_template.md
-├── CHANGELOG.md
-├── CODE_OF_CONDUCT.md
-├── CONTRIBUTING.md
-├── LICENSE
-├── README.md
-└── SECURITY.md
-```
-
-## ¿Por qué solo hay una base de datos?
-
-Solo existe **`database/quien_se_atreve.sqlite`**. Los demás archivos cumplen
-funciones distintas y no son bases de datos duplicadas:
-
-- **`data/hot/*.csv`**: fuente editable de las 2.000 preguntas y retos hot.
-- **`data/extra/*.csv`**: fuente editable de los 2.400 ítems no-hot.
-- **`data/glosario.csv`**: fuente del glosario.
-- **`app/index.html`**: lleva todo el contenido incrustado para funcionar sin
-  servidor ni base de datos en el celular.
-- **`database/quien_se_atreve.sqlite`**: se genera desde los CSV y se usa para
-  montar la app. Es la única BD del repositorio.
-
-El antiguo volcado `.sql` y las copias de revisión se eliminaron porque eran
-artefactos regenerables.
-
-## Desarrollo
-
-Requisitos: **Python 3.10+** y **Node.js 18+** para las verificaciones. Para
-regenerar los iconos, **Pillow** y **NumPy**.
-
-```bash
-# Reconstruir la base de datos y la app final
-python3 tools/build.py
-
-# Verificar integridad y contenido
-python3 tools/verify.py
-node tools/verify.js
-
-# Solo si cambia el logo (requiere Pillow y NumPy)
-python3 -m pip install -r tools/requirements.txt
-python3 tools/make_icons.py
-```
-
-El build deja la app lista en `app/index.html`. Para probarla en local:
-
-```bash
-cd app
-python3 -m http.server 8765
-# Abre http://localhost:8765
-```
-
-No abras `app/index.html` con `file://` si quieres probar la instalación PWA:
-el service worker necesita `http://` o `https://`.
-
-Si publicas una actualización y la app ya estaba instalada, sube `VERSION` en
-`app/sw.js` para que el service worker descarte la caché anterior.
-
 ## Base de datos
 
 `database/quien_se_atreve.sqlite` contiene:
@@ -393,40 +396,25 @@ sqlite3 database/quien_se_atreve.sqlite \
   "SELECT juego, nivel, tipo, COUNT(*) FROM preguntas GROUP BY 1,2,3;"
 ```
 
-## Publicar en GitHub Pages
+Los CSV de `data/` son la fuente editable. `database/quien_se_atreve.sqlite` se
+genera desde ellos y `app/index.html` se monta con el contenido incrustado. No
+hay bases de datos duplicadas.
 
-La primera vez:
+## Privacidad y seguridad
 
-1. Sube `main` y `develop`:
+La app no recopila datos personales, no usa analítica y no envía información a
+ningún servidor. Los jugadores y el historial se guardan únicamente en
+`localStorage`, dentro del WebView del APK.
 
-   ```bash
-   git push -u origin main
-   git push -u origin develop
-   ```
-
-2. En GitHub, entra a **Settings → Pages**.
-3. En **Build and deployment → Source**, elige **GitHub Actions**.
-4. Ejecuta el workflow **Deploy PWA to GitHub Pages** desde la pestaña
-   **Actions** si no se lanzó automáticamente.
-5. Abre la URL publicada en el celular e instala la app.
-
-A partir de ahí, cada merge a `main` publica una nueva versión.
+Para reportar una vulnerabilidad, usa **Security → Report a vulnerability** en
+GitHub. No publiques tokens, credenciales, keystores ni datos personales en
+issues o Pull Requests. Más detalles en [`SECURITY.md`](SECURITY.md).
 
 ## Contribuir
 
 Lee [`CONTRIBUTING.md`](CONTRIBUTING.md) para el flujo de ramas, la convención de
 commits y la checklist de Pull Request. Todas las contribuciones deben respetar
 el [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md).
-
-## Privacidad y seguridad
-
-La app no recopila datos personales, no usa analítica y no envía información a
-ningún servidor. Los jugadores y el historial de preguntas se guardan únicamente
-en `localStorage`, en el dispositivo.
-
-Para reportar una vulnerabilidad, usa **Security → Report a vulnerability** en
-GitHub. No publiques tokens, credenciales ni datos personales en issues o Pull
-Requests. Más detalles en [`SECURITY.md`](SECURITY.md).
 
 ## Licencia y créditos
 

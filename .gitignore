@@ -14,3 +14,16 @@ venv/
 # Logs y temporales
 *.log
 *.tmp
+
+# Node y Capacitor
+node_modules/
+android/
+android-assets/
+
+# APK, bundles y firmas (nunca versionar la clave)
+*.apk
+*.aab
+*.p12
+*.jks
+*.keystore
+.signing/

@@ -1,0 +1,20 @@
+{
+  "name": "quien-se-atreve",
+  "version": "1.1.0",
+  "private": true,
+  "description": "Juego de verdades y retos para mayores de 18 años. Hecho por Digital Assets.",
+  "license": "MIT",
+  "scripts": {
+    "android:add": "cap add android",
+    "android:sync": "cap sync android",
+    "android:debug": "cd android && ./gradlew assembleDebug",
+    "android:release": "cd android && ./gradlew assembleRelease"
+  },
+  "dependencies": {
+    "@capacitor/android": "7.6.9",
+    "@capacitor/core": "7.6.9"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "7.6.9"
+  }
+}

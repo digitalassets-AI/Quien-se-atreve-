@@ -5683,8 +5683,15 @@ window.addEventListener('DOMContentLoaded', () => {
 // ============================================================
 const installBtn = document.getElementById('installBtn');
 let deferredInstallPrompt = null;
+// Dentro del APK (Capacitor) no se muestra el botón de instalación PWA.
+const isNativeApp = Boolean(
+  window.Capacitor
+  && typeof window.Capacitor.isNativePlatform === 'function'
+  && window.Capacitor.isNativePlatform()
+);
 const isStandalone = window.matchMedia('(display-mode: standalone)').matches
-  || window.navigator.standalone === true;
+  || window.navigator.standalone === true
+  || isNativeApp;
 const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent)
   || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 const isMobile = /android|iphone|ipad|ipod|mobile/i.test(navigator.userAgent) || isIOS;
@@ -5694,6 +5701,7 @@ if (!isStandalone && installBtn && isMobile) {
 }
 
 window.addEventListener('beforeinstallprompt', (event) => {
+  if (isNativeApp) return;
   event.preventDefault();
   deferredInstallPrompt = event;
   if (installBtn) installBtn.hidden = false;
@@ -5721,7 +5729,7 @@ window.addEventListener('appinstalled', () => {
   deferredInstallPrompt = null;
 });
 
-if ('serviceWorker' in navigator) {
+if ('serviceWorker' in navigator && !isNativeApp) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('./sw.js').catch((err) => {
       console.warn('Service worker no registrado:', err);

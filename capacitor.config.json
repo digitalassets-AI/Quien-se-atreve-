@@ -1,0 +1,11 @@
+{
+  "appId": "com.digitalassets.quienseatreve",
+  "appName": "¿Quién se atreve?",
+  "webDir": "app",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": false
+  }
+}
