@@ -1,0 +1,42 @@
+name: "✨ Sugerir una mejora"
+description: "Ideas para contenido, interfaz o funcionamiento"
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Cuéntanos qué te gustaría ver. Revisa primero si ya existe una propuesta similar.
+  - type: textarea
+    id: problema
+    attributes:
+      label: ¿Qué problema resuelve?
+      placeholder: "Sería útil poder..."
+    validations:
+      required: true
+  - type: textarea
+    id: propuesta
+    attributes:
+      label: Propuesta
+      description: Describe la idea con el mayor detalle posible.
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Área
+      options:
+        - Contenido (preguntas y retos)
+        - Interfaz y experiencia
+        - PWA / instalación
+        - Rendimiento
+        - Documentación
+        - Otro
+    validations:
+      required: true
+  - type: textarea
+    id: alternativas
+    attributes:
+      label: Alternativas consideradas
+    validations:
+      required: false

@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: "🔐 Reportar una vulnerabilidad"
+    url: "https://github.com/digitalassets-AI/Quien-se-atreve-/security/advisories/new"
+    about: "No publiques problemas de seguridad en issues."
+  - name: "📖 Guía de contribución"
+    url: "https://github.com/digitalassets-AI/Quien-se-atreve-/blob/main/CONTRIBUTING.md"
+    about: "Lee el flujo de ramas y la checklist antes de contribuir."
