@@ -46,7 +46,7 @@ la app instalada. Si la clave se compromete, hay que evaluar un cambio de
 - No publiques tokens, credenciales, keystores ni datos personales en issues o
   PRs.
 - Revisa los cambios de dependencias de GitHub Actions y de Capacitor.
-- Mantén `actions/checkout`, `actions/setup-*`, `android-actions/setup-android`
-  y las acciones de Pages actualizadas.
+- Mantén `actions/checkout`, `actions/setup-*` y las acciones de Pages
+  actualizadas.
 - Verifica el APK con `apksigner verify --print-certs` antes de publicarlo.
 - Si encuentras contenido inapropiado, repórtalo de forma privada.
