@@ -9,8 +9,16 @@ el versionado sigue [Semantic Versioning](https://semver.org/lang/es/).
 
 ### Próximo
 
-- Contenido nuevo por categoría.
 - Mejoras de accesibilidad y pruebas en más dispositivos.
+
+## [1.1.1] - 2026-11-09
+
+### Cambiado
+
+- Nueva base de datos de 1.210 verdades y retos: 610 ítems hot en cuatro
+  niveles y 600 ítems normales repartidos en los seis nodos no-hot.
+- Eliminada la categoría Familia de la interfaz.
+- Verificadores y documentación ajustados a los nuevos conteos.
 
 ## [1.1.0] - 2026-10-25
 

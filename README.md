@@ -40,7 +40,7 @@ funcionan sin conexión.
 
 1. Entra a **[Releases](https://github.com/digitalassets-AI/Quien-se-atreve-/releases/latest)**
    desde el teléfono.
-2. Descarga el archivo `quien-se-atreve-v1.1.0.apk`.
+2. Descarga el archivo `quien-se-atreve-v1.1.1.apk`.
 3. Ábrelo desde la notificación o desde **Archivos → Descargas**.
 4. Si Android lo solicita, permite **instalar apps desconocidas** para el
    navegador o el administrador de archivos que estés usando.
@@ -317,8 +317,8 @@ instalación limpia o un cambio de `appId`.
 
    ```bash
    git add .
-   git commit -m "release: preparar 1.1.0"
-   git tag -a v1.1.0 -m "Versión 1.1.0"
+   git commit -m "release: preparar 1.1.1"
+   git tag -a v1.1.1 -m "Versión 1.1.1"
    git push origin main --tags
    ```
 
