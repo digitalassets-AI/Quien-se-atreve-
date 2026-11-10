@@ -111,6 +111,20 @@
     color:#fff;
     box-shadow:0 10px 24px rgba(255,46,136,.24);
   }
+  .actions-row{display:flex;align-items:center;gap:12px}
+  .actions-row .btn{flex:1;width:auto}
+  .alt-link{
+    color:#ff9cc9;
+    font-weight:800;
+    font-size:.9rem;
+    text-decoration:none;
+    white-space:nowrap;
+  }
+  .alt-link:hover{text-decoration:underline}
+  @media (max-width:390px){
+    .actions-row{flex-direction:column;align-items:stretch;gap:8px}
+    .alt-link{text-align:center}
+  }
   .steps{
     margin:16px 0 0;
     padding-left:22px;
@@ -178,7 +192,10 @@
         <div><b>iPhone / iPad</b><small>PWA instalable desde Safari</small></div>
         <span class="badge">Tu dispositivo</span>
       </div>
-      <a class="btn ios" href="https://digitalassets-ai.github.io/Quien-se-atreve-/" rel="noopener">🌐 Abrir la app en Safari</a>
+      <div class="actions-row">
+        <a class="btn ios" href="https://digitalassets-ai.github.io/Quien-se-atreve-/" rel="noopener">🌐 Abrir en Safari</a>
+        <a class="alt-link" href="https://digitalassets-ai.github.io/Quien-se-atreve-/" rel="noopener">o jugar aquí</a>
+      </div>
       <ol class="steps">
         <li>Abre este enlace en <b>Safari</b>.</li>
         <li>Toca el botón <b>Compartir</b> (el cuadro con la flecha hacia arriba).</li>

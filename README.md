@@ -45,8 +45,8 @@ Escanea el QR con la cámara del teléfono. El QR apunta a un enlace estable
 solo se actualiza `app/go/index.html` y el QR impreso sigue funcionando.
 
 La página detecta el sistema y muestra la descarga del APK en Android o la
-instalación como PWA en iOS. El APK también se publica dentro de GitHub Pages,
-así que la descarga no depende de la API de GitHub Releases.
+instalación como PWA en iOS. En iPhone/iPad también puedes tocar **o jugar
+aquí** para usar la app sin instalarla.
 
 ## Instalar en Android (APK)
 

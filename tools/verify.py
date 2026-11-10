@@ -141,6 +141,7 @@ def verificar_app() -> None:
             "Agregar a pantalla de inicio" in texto,
             "Faltan las instrucciones de instalación en iOS",
         )
+        check("o jugar aquí" in texto, "Falta el enlace para jugar sin instalar en iOS")
         check("Digital Assets" in texto, "Falta el crédito en la página de descarga")
     redireccion = APP / "go" / "index.html"
     check(redireccion.exists(), "Falta app/go/index.html (QR dinámico)")
