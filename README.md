@@ -22,6 +22,7 @@
   </a>
   <img alt="18+" src="https://img.shields.io/badge/18%2B-solo%20adultos-ff0066">
   <img alt="Android 6+" src="https://img.shields.io/badge/Android-6.0%2B-3ddc84">
+  <img alt="iOS 12+" src="https://img.shields.io/badge/iOS-12.0%2B-000000?logo=apple&logoColor=white">
   <img alt="Offline" src="https://img.shields.io/badge/offline-s%C3%AD-00a86b">
   <img alt="Licencia MIT" src="https://img.shields.io/badge/c%C3%B3digo-MIT-ffcc00">
 </p>
@@ -31,9 +32,9 @@
 > Assets no se responsabiliza de nada** de lo que ocurra antes, durante o
 > después del juego.
 
-## Descargar e instalar el APK
+## Instalar en Android (APK)
 
-La distribución oficial es un **APK para Android**. No es un acceso directo al
+En Android la distribución oficial es un **APK**. No es un acceso directo al
 navegador: la app, el logo y los 4.432 ítems viajan dentro del archivo y
 funcionan sin conexión.
 
@@ -52,16 +53,32 @@ Requisitos y notas:
 - Para actualizar, descarga el APK nuevo e instálalo encima del anterior. La
   firma es la misma, así que se conservan los jugadores y el historial.
 - Si desinstalas la app, Android borra sus datos locales.
-- **iPhone/iPad:** un APK no se puede instalar en iOS. Para ese caso haría falta
-  una IPA firmada con una cuenta de desarrollador de Apple; no forma parte de
-  esta distribución.
 
-> La carpeta `app/` también se publica como **vista previa web** para desarrollo:
-> `https://digitalassets-ai.github.io/Quien-se-atreve-/`.
-> Esa vista previa no es la forma oficial de instalar el juego.
+## Instalar en iOS (iPhone/iPad)
+
+iOS no puede abrir un APK: es un formato exclusivo de Android. En iPhone y iPad
+la misma app se instala como **PWA desde Safari**, con el mismo contenido, los
+mismos 4.432 ítems y funcionamiento sin conexión.
+
+1. Abre **Safari** y entra a
+   `https://digitalassets-ai.github.io/Quien-se-atreve-/`.
+2. Toca el botón **Compartir** (el cuadrado con la flecha hacia arriba).
+3. Elige **Agregar a pantalla de inicio**.
+4. Confirma con **Agregar**.
+
+La app queda con su icono, se abre a pantalla completa y funciona sin conexión
+después de la primera carga. No requiere App Store, cuenta de Apple ni Mac.
+
+> **¿Y una app nativa para la App Store?** Requiere una cuenta de Apple
+> Developer (99 USD al año), un Mac con Xcode y firma con certificados de Apple.
+> No forma parte de esta distribución; la PWA es la vía oficial y gratuita para
+> iOS. La carpeta `app/` es exactamente el mismo contenido que se empaqueta en
+> el APK.
 
 ## Tabla de contenido
 
+- [Instalar en Android (APK)](#instalar-en-android-apk)
+- [Instalar en iOS (iPhone/iPad)](#instalar-en-ios-iphoneipad)
 - [¿Qué es?](#qué-es)
 - [Características](#características)
 - [Contenido](#contenido)
@@ -79,9 +96,10 @@ Requisitos y notas:
 
 ## ¿Qué es?
 
-Una app Android con **4.432 verdades y retos** repartidos en tres categorías y
-nueve subcategorías. El contenido se empaqueta dentro del APK con
-[Capacitor](https://capacitorjs.com/) y se ejecuta en un WebView local, sin
+Una app para **Android e iOS** con **4.432 verdades y retos** repartidos en tres
+categorías y nueve subcategorías. En Android el contenido se empaqueta dentro
+del APK con [Capacitor](https://capacitorjs.com/) y se ejecuta en un WebView
+local. En iOS se instala como PWA desde Safari. En ambos casos funciona sin
 servidor y sin depender de una página externa.
 
 - **Amigos:** panas, mejores amigos y amigos 🔥
@@ -98,15 +116,15 @@ servidor y sin depender de una página externa.
 
 | Característica | Detalle |
 |---|---|
-| Distribución | APK Android firmado, generado por GitHub Actions |
-| Empaquetado | Capacitor 7 + WebView local; no es un navegador externo |
-| Offline | Todo el contenido y los recursos están dentro del APK |
+| Distribución | APK Android firmado + PWA instalable en iOS |
+| Empaquetado | Capacitor 7 + WebView local en Android; PWA en iOS |
+| Offline | Contenido empaquetado en el APK o cacheado por el service worker |
 | Sin backend | No hay cuentas, servidor ni base de datos remota |
 | Persistencia | `localStorage`: jugadores, partida e historial |
 | Anti-repetición | Historial global por texto base, persistente |
 | Responsive | Diseñada para teléfonos, tablets y escritorio |
 | Privacidad | Sin analítica, sin cuentas y sin envío de datos |
-| Vista previa web | `app/` se publica en GitHub Pages solo para desarrollo |
+| Versión web/PWA | `app/` se publica en GitHub Pages; es la instalación para iOS |
 
 ## Contenido
 
@@ -134,11 +152,11 @@ servidor y sin depender de una página externa.
 
 ```text
 Quien-se-atreve-/
-├── app/                         # Web assets que se empaquetan en el APK
+├── app/                         # Web assets del APK y de la PWA de iOS
 │   ├── index.html               # App final, autónoma y con el logo incrustado
-│   ├── manifest.webmanifest     # Vista previa web (no se usa dentro del APK)
-│   ├── sw.js                    # Service worker de la vista previa
-│   └── icons/                   # Iconos de la vista previa
+│   ├── manifest.webmanifest     # Manifiesto PWA (iOS y navegador)
+│   ├── sw.js                    # Service worker para uso sin conexión
+│   └── icons/                   # Iconos de la PWA y de iOS
 ├── assets/
 │   └── logo.webp                # Logo original con transparencia
 ├── data/
