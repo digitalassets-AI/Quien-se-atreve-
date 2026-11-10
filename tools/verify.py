@@ -130,16 +130,34 @@ def verificar_app() -> None:
             "La página de descarga no enlaza a la PWA",
         )
         check(
-            "releases" in texto and "api.github.com" in texto,
-            "La página de descarga no obtiene el APK de las Releases",
+            "descargas/quien-se-atreve.apk" in texto,
+            "La página de descarga no enlaza al APK alojado en Pages",
+        )
+        check(
+            "releases/latest" in texto,
+            "La página de descarga no incluye el enlace de respaldo a Releases",
         )
         check(
             "Agregar a pantalla de inicio" in texto,
             "Faltan las instrucciones de instalación en iOS",
         )
         check("Digital Assets" in texto, "Falta el crédito en la página de descarga")
+    redireccion = APP / "go" / "index.html"
+    check(redireccion.exists(), "Falta app/go/index.html (QR dinámico)")
+    if redireccion.exists():
+        check(
+            "../descargar.html" in redireccion.read_text(encoding="utf-8"),
+            "El QR dinámico no redirige a descargar.html",
+        )
     for qr in ("qr-descarga.png", "qr-descarga.svg"):
         check((APP / qr).exists(), f"Falta app/{qr}")
+    apk = APP / "descargas" / "quien-se-atreve.apk"
+    check(apk.exists(), "Falta app/descargas/quien-se-atreve.apk")
+    if apk.exists():
+        check(
+            apk.stat().st_size > 1_000_000,
+            f"El APK de Pages parece incompleto ({apk.stat().st_size} bytes)",
+        )
 
     sw_path = APP / "sw.js"
     check(sw_path.exists(), "Falta app/sw.js")

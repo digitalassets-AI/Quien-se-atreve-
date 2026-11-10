@@ -35,19 +35,29 @@
 ## Descargar con un QR
 
 <p align="center">
-  <a href="https://digitalassets-ai.github.io/Quien-se-atreve-/descargar.html">
+  <a href="https://digitalassets-ai.github.io/Quien-se-atreve-/go/">
     <img src="app/qr-descarga.png" alt="QR para descargar ¿Quién se atreve?" width="240">
   </a>
 </p>
 
-Escanea el QR con la cámara del teléfono. La página detecta el sistema y muestra
-la descarga del APK en Android o la instalación como PWA en iOS.
+Escanea el QR con la cámara del teléfono. El QR apunta a un enlace estable
+(`/go/`) que redirige a la página de descarga: si algún día cambia la página,
+solo se actualiza `app/go/index.html` y el QR impreso sigue funcionando.
+
+La página detecta el sistema y muestra la descarga del APK en Android o la
+instalación como PWA en iOS. El APK también se publica dentro de GitHub Pages,
+así que la descarga no depende de la API de GitHub Releases.
 
 ## Instalar en Android (APK)
 
 En Android la distribución oficial es un **APK**. No es un acceso directo al
 navegador: la app, el logo y los 1.210 ítems viajan dentro del archivo y
 funcionan sin conexión.
+
+El APK se versiona en `app/descargas/quien-se-atreve.apk` y se sirve desde
+GitHub Pages, así que el enlace de descarga es estable y no depende de la API
+de GitHub en tiempo de ejecución. Para actualizarlo tras publicar un release,
+ejecuta `GH_TOKEN=... python3 tools/copy_apk.py` y haz commit del archivo.
 
 1. Entra a **[Releases](https://github.com/digitalassets-AI/Quien-se-atreve-/releases/latest)**
    desde el teléfono.
@@ -165,7 +175,9 @@ Quien-se-atreve-/
 ├── app/                         # Web assets del APK y de la PWA de iOS
 │   ├── index.html               # App final, autónoma y con el logo incrustado
 │   ├── descargar.html           # Página de descarga según Android o iOS
-│   ├── qr-descarga.png          # QR único que abre descargar.html
+│   ├── go/index.html            # Redirección estable del QR dinámico
+│   ├── qr-descarga.png          # QR único (apunta a /go/)
+│   ├── descargas/               # APK del último release (versionado)
 │   ├── manifest.webmanifest     # Manifiesto PWA (iOS y navegador)
 │   ├── sw.js                    # Service worker para uso sin conexión
 │   └── icons/                   # Iconos de la PWA y de iOS
@@ -185,16 +197,17 @@ Quien-se-atreve-/
 │   ├── montar_interfaz.py       # SQLite + CSV + logo → app/index.html
 │   ├── make_icons.py            # Genera los iconos web desde el logo
 │   ├── make_qr.py               # Genera el QR único de descarga
+│   ├── copy_apk.py              # Copia el APK del release a app/descargas/
 │   ├── make_android_assets.py   # Genera iconos y splash de Android
 │   ├── prepare_android.py       # Nombre, versión, orientación y firma
 │   ├── verify.py                # Verifica BD, web, APK y archivos
 │   ├── verify.js                # Verifica los 1.210 ítems finales
-│   └── requirements.txt         # Pillow y NumPy para regenerar imágenes
+│   └── requirements.txt         # Pillow, NumPy y Segno para imágenes y QR
 ├── .github/
 │   ├── workflows/
 │   │   ├── ci.yml               # Verificación del contenido
 │   │   ├── android.yml          # Build y Release del APK
-│   │   └── pages.yml            # Vista previa web opcional
+│   │   └── pages.yml            # Publica la PWA y el APK en GitHub Pages
 │   ├── ISSUE_TEMPLATE/
 │   └── pull_request_template.md
 ├── capacitor.config.json        # Configuración de Capacitor
@@ -338,6 +351,16 @@ instalación limpia o un cambio de `appId`.
 
 4. El workflow **Android APK** se ejecuta con el tag, compila el APK firmado y
    crea la Release con el archivo descargable.
+5. Cuando termine el release, actualiza el APK que se sirve desde Pages:
+
+   ```bash
+   GH_TOKEN=... python3 tools/copy_apk.py
+   git add app/descargas/quien-se-atreve.apk
+   git commit -m "chore(web): actualizar APK de Pages"
+   git push origin main
+   ```
+
+   El push vuelve a desplegar GitHub Pages con el APK nuevo.
 
 El `versionCode` se calcula a partir del tag: `v1.1.0 → 10100`,
 `v1.1.1 → 10101`, `v1.2.0 → 10200`. Debe ser siempre mayor que el anterior.
@@ -352,7 +375,7 @@ se crea una Release.
 |---|---|---|
 | `ci.yml` | Push a `main`/`develop` y Pull Requests | Reconstruye, verifica contenido y comprueba que `app/index.html` esté actualizado |
 | `android.yml` | Tags `v*` y ejecución manual | Crea el proyecto Capacitor, genera iconos/splash, firma y publica el APK |
-| `pages.yml` | Push a `main` o ejecución manual | Publica `app/` como vista previa web en GitHub Pages |
+| `pages.yml` | Push a `main` o ejecución manual | Publica `app/` (PWA y APK) en GitHub Pages |
 
 Comandos que ejecuta el CI:
 

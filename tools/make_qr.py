@@ -13,7 +13,7 @@ import segno
 
 ROOT = Path(__file__).resolve().parent.parent
 SALIDA = ROOT / "app"
-URL = "https://digitalassets-ai.github.io/Quien-se-atreve-/descargar.html"
+URL = "https://digitalassets-ai.github.io/Quien-se-atreve-/go/"
 
 
 def main() -> None:

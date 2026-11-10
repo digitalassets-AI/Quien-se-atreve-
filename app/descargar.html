@@ -162,9 +162,9 @@
         <div><b>Android</b><small>APK firmado · Android 6 o superior</small></div>
         <span class="badge">Tu dispositivo</span>
       </div>
-      <a class="btn android" id="apkBtn" href="https://github.com/digitalassets-AI/Quien-se-atreve-/releases/download/v1.1.1/quien-se-atreve-v1.1.1.apk" rel="noopener">⬇️ Descargar APK</a>
+      <a class="btn android" id="apkBtn" href="descargas/quien-se-atreve.apk" download>⬇️ Descargar APK</a>
       <ol class="steps">
-        <li>Descarga el archivo <b id="apkName">quien-se-atreve-v1.1.1.apk</b>.</li>
+        <li>Descarga el archivo <b>quien-se-atreve.apk</b>.</li>
         <li>Ábrelo desde la notificación o desde <b>Archivos → Descargas</b>.</li>
         <li>Si Android lo pide, permite instalar apps de esta fuente.</li>
         <li>Toca <b>Instalar</b> y luego <b>Abrir</b>.</li>
@@ -211,22 +211,6 @@
     androidCard.classList.add("primary");
     iosCard.classList.add("secondary");
   }
-
-  // Toma siempre el APK del último release publicado.
-  fetch("https://api.github.com/repos/digitalassets-AI/Quien-se-atreve-/releases/latest", {
-    headers: { Accept: "application/vnd.github+json" }
-  })
-    .then(function (res) { return res.ok ? res.json() : Promise.reject(new Error("API")); })
-    .then(function (data) {
-      var apk = (data.assets || []).filter(function (a) {
-        return /\.apk$/i.test(a.name);
-      })[0];
-      if (!apk) return;
-      document.getElementById("apkBtn").href = apk.browser_download_url;
-      var name = document.getElementById("apkName");
-      if (name) name.textContent = apk.name;
-    })
-    .catch(function () { /* Se mantiene el enlace directo de respaldo. */ });
 })();
 </script>
 </body>

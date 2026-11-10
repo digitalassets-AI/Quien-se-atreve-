@@ -13,8 +13,11 @@ el versionado sigue [Semantic Versioning](https://semver.org/lang/es/).
 
 ### Agregado
 
-- Página de descarga con detección de Android/iOS y QR único para ambas
+- Página de descarga con detección de Android/iOS y QR dinámico para ambas
   plataformas.
+- El APK del último release se publica en `app/descargas/quien-se-atreve.apk` y
+  se sirve desde GitHub Pages, sin depender de la API de GitHub en tiempo de
+  ejecución.
 
 ## [1.1.1] - 2026-11-09
 

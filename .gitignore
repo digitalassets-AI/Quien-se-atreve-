@@ -27,3 +27,6 @@ android-assets/
 *.jks
 *.keystore
 .signing/
+
+# Excepción: APK que se publica dentro de GitHub Pages
+!app/descargas/quien-se-atreve.apk
