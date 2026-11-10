@@ -439,10 +439,6 @@
   <img class="app-logo small" src="__LOGO_DATA_URI__" alt="¿Quién se atreve?">
   <h1 class="logo" style="font-size:clamp(1.4rem,5vw,2rem);">¿CON QUIÉN JUEGAS?</h1>
   <p class="subtitle">Elige tu categoría</p>
-  <button class="category-btn cat1" onclick="selectCategory('familia')">
-    <span class="emoji">👨‍👩‍👧‍👦</span>
-    <div class="info"><b>Familia</b><small>Primos, familia</small></div>
-  </button>
   <button class="category-btn cat2" onclick="selectCategory('amigos')">
     <span class="emoji">👯</span>
     <div class="info"><b>Amigos</b><small>Panas, mejores amigos, amigos 🔥</small></div>
@@ -665,7 +661,6 @@ function selectCategory(category) {
 function renderSubcategories() {
   const container = document.getElementById('subcategoryButtons');
   const titles = {
-    familia: '👨‍👩‍👧‍👦 Familia',
     amigos: '👯 Amigos',
     pareja: '💑 Pareja',
     universidad: '🎓 Universidad'
@@ -673,10 +668,6 @@ function renderSubcategories() {
   document.getElementById('subcategoryTitle').textContent = titles[currentCategory];
 
   const subcategories = {
-    familia: [
-      { id:'primos', name:'Primos', emoji:'👫' },
-      { id:'familia', name:'Familia', emoji:'👨‍👩‍👧‍👦' }
-    ],
     amigos: [
       { id:'amigos_hot', name:'Amigos 🔥', emoji:'👯' },
       { id:'panas', name:'Panas', emoji:'🤝' },
@@ -794,11 +785,10 @@ function renderPlayers() {
 // 🏷️ ETIQUETAS Y CAMBIO DE MODO EN PARTIDA
 // ============================================================
 const CAT_LABELS = {
-  familia:'👨‍👩‍👧‍👦 FAMILIA', amigos:'👯 AMIGOS',
+  amigos:'👯 AMIGOS',
   pareja:'💑 PAREJA', universidad:'🎓 UNIVERSIDAD'
 };
 const SUB_LABELS = {
-  primos:'PRIMOS', familia:'FAMILIA',
   amigos_hot:'AMIGOS 🔥', panas:'PANAS', mejores_amigos:'MEJORES AMIGOS',
   pareja_hot:'PAREJA 🔥', conocerse_fondo:'CONOCERSE A FONDO', conocerse:'CONOCERSE',
   companeros:'COMPAÑEROS', amigos_u:'AMIGOS DE LA U',
@@ -914,20 +904,6 @@ function spinBottle() {
 // 🎯 CONTENIDO DE RETOS Y PREGUNTAS
 // ============================================================
 const challenges = {
-  familia: {
-    primos: {
-      questions: [
-      ],
-      actions: [
-      ]
-    },
-    familia: {
-      questions: [
-      ],
-      actions: [
-      ]
-    }
-  },
   amigos: {
     amigos_hot: {
       questions: [
@@ -1220,7 +1196,7 @@ function showResult(idx) {
   currentChallenge = anotarTexto(resolveChallenge(item, player.gender));
   currentChallengeType = type;
   
-  const emojis = { familia:'👨‍👩‍👧‍👦', amigos:'👯', pareja:'💑', universidad:'🎓' };
+  const emojis = { amigos:'👯', pareja:'💑', universidad:'🎓' };
 
   document.getElementById('resultEmoji').textContent = emojis[currentCategory];
   document.getElementById('resultTarget').textContent = `${player.gender==='M'?'👨':'👩'} ${player.name}`;

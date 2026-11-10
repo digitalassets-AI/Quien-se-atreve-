@@ -17,12 +17,10 @@ JUEGOS = {
 }
 
 NIVELES = {
-    "amigos": {1:"Rompehielos", 2:"Coquetas", 3:"Atrevidas", 4:"Calientes",
-                5:"Extremas", 6:"Leyenda Fuego"},
-    "pareja": {1:"Conexión", 2:"Deseo", 3:"Pasión", 4:"Fuego",
-                5:"Éxtasis", 6:"Noche Infinita"},
+    "amigos": {1:"Rompehielos", 2:"Coquetas", 3:"Atrevidas", 4:"Calientes"},
+    "pareja": {1:"Conexión", 2:"Deseo", 3:"Pasión", 4:"Fuego"},
     "universidad": {1:"Paso 1 · Cero", 2:"Paso 2 · Fuego", 3:"Paso 3 · Pulso",
-                     4:"Paso 4 · Límite", 5:"Paso 5 · Tormenta", 6:"Invictus"},
+                     4:"Paso 4 · Límite"},
 }
 
 

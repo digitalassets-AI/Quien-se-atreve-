@@ -15,18 +15,18 @@ DB = ROOT / "database" / "quien_se_atreve.sqlite"
 APP = ROOT / "app"
 
 EXPECTED = {
-    "preguntas": 2000,
-    "nodos_extra": 2400,
-    "glosario": 72,
+    "preguntas": 610,
+    "nodos_extra": 600,
+    "glosario": 0,
 }
-HOT_POR_JUEGO = {"amigos": 600, "pareja": 800, "universidad": 600}
+HOT_POR_JUEGO = {"amigos": 210, "pareja": 210, "universidad": 190}
 EXTRA_POR_NODO = {
-    ("amigos", "panas"): 400,
-    ("amigos", "mejores_amigos"): 400,
-    ("pareja", "conocerse"): 400,
-    ("pareja", "conocerse_fondo"): 400,
-    ("universidad", "companeros"): 400,
-    ("universidad", "amigos_u"): 400,
+    ("amigos", "panas"): 100,
+    ("amigos", "mejores_amigos"): 100,
+    ("pareja", "conocerse"): 100,
+    ("pareja", "conocerse_fondo"): 100,
+    ("universidad", "companeros"): 100,
+    ("universidad", "amigos_u"): 100,
 }
 
 errores = []
@@ -102,7 +102,7 @@ def verificar_app() -> None:
         return
 
     html = index.read_text(encoding="utf-8")
-    check(len(html) > 500_000, f"index.html parece incompleto ({len(html)} bytes)")
+    check(len(html) > 300_000, f"index.html parece incompleto ({len(html)} bytes)")
     check("__LOGO_DATA_URI__" not in html, "El logo no se montó en index.html")
     check("data:image/webp;base64," in html, "Falta el logo incrustado")
     check('rel="manifest"' in html, "Falta el enlace al manifest")

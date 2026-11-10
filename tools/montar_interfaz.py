@@ -5,7 +5,7 @@ Estructura de nodos (categoría -> subcategoría -> {questions, actions}):
 
   Nodos HOT     -> contenido de la BD (database/quien_se_atreve.sqlite).
   Nodos NO-HOT  -> contenido de data/extra/<subcategoria>.csv
-                   (200 verdades + 200 retos por nodo).
+                   (50 verdades + 50 retos por nodo).
 
 Uso:
     python3 tools/montar_interfaz.py [plantilla.html] [salida.html]
@@ -118,13 +118,10 @@ def montar():
     nodos = cargar_nodos()
 
     ini = html.index("const challenges = {")
-    fam_ini = html.index("familia: {", ini)
-    amigos_ini = html.index("amigos: {", fam_ini)
-    familia = html[fam_ini:amigos_ini]        # familia + su cierre "  },\n  "
-    fin_obj = html.index("};", ini)          # primer "};" tras el inicio = cierre de challenges
-    pie = html[fin_obj + 2:]
+    fin_obj = html.index("\n};", ini)
+    pie = html[fin_obj + len("\n};"):]
 
-    nuevo_obj = "const challenges = {\n" + familia + bloque_js(nodos) + "};"
+    nuevo_obj = "const challenges = {\n" + bloque_js(nodos) + "};"
     html = html[:ini] + nuevo_obj + pie
     SALIDA.write_text(html, encoding="utf-8")
 

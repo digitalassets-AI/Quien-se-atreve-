@@ -35,7 +35,7 @@
 ## Instalar en Android (APK)
 
 En Android la distribución oficial es un **APK**. No es un acceso directo al
-navegador: la app, el logo y los 4.432 ítems viajan dentro del archivo y
+navegador: la app, el logo y los 1.210 ítems viajan dentro del archivo y
 funcionan sin conexión.
 
 1. Entra a **[Releases](https://github.com/digitalassets-AI/Quien-se-atreve-/releases/latest)**
@@ -58,7 +58,7 @@ Requisitos y notas:
 
 iOS no puede abrir un APK: es un formato exclusivo de Android. En iPhone y iPad
 la misma app se instala como **PWA desde Safari**, con el mismo contenido, los
-mismos 4.432 ítems y funcionamiento sin conexión.
+mismos 1.210 ítems y funcionamiento sin conexión.
 
 1. Abre **Safari** y entra a
    `https://digitalassets-ai.github.io/Quien-se-atreve-/`.
@@ -96,7 +96,7 @@ después de la primera carga. No requiere App Store, cuenta de Apple ni Mac.
 
 ## ¿Qué es?
 
-Una app para **Android e iOS** con **4.432 verdades y retos** repartidos en tres
+Una app para **Android e iOS** con **1.210 verdades y retos** repartidos en tres
 categorías y nueve subcategorías. En Android el contenido se empaqueta dentro
 del APK con [Capacitor](https://capacitorjs.com/) y se ejecuta en un WebView
 local. En iOS se instala como PWA desde Safari. En ambos casos funciona sin
@@ -105,7 +105,6 @@ servidor y sin depender de una página externa.
 - **Amigos:** panas, mejores amigos y amigos 🔥
 - **Pareja:** conocerse, conocerse a fondo y pareja 🔥
 - **Universidad:** compañeros, amigos de la U y universidad 🔥
-- **Familia:** primos y familia (contenido base incluido en la app)
 - Tres modos: **💬 Preguntas**, **🔥 Retos** y **🎲 Aleatorio**
 - Cambio de modo desde la pantalla del giro, sin salir de la partida
 - Jugadores guardados, saltos por jugador y botella animada
@@ -130,21 +129,21 @@ servidor y sin depender de una página externa.
 
 | Categoría   | Subcategoría       | Ítems | Origen                    |
 |-------------|--------------------|:-----:|---------------------------|
-| Familia     | primos / familia   |   32  | Incluido en la plantilla  |
-| Amigos      | panas              |  400  | `data/extra/panas.csv`    |
-| Amigos      | mejores_amigos     |  400  | `data/extra/mejores_amigos.csv` |
-| Amigos      | amigos_hot         |  600  | Base de datos             |
-| Pareja      | conocerse          |  400  | `data/extra/conocerse.csv` |
-| Pareja      | conocerse_fondo    |  400  | `data/extra/conocerse_fondo.csv` |
-| Pareja      | pareja_hot         |  800  | Base de datos             |
-| Universidad | universidad_hot    |  600  | Base de datos             |
-| Universidad | companeros         |  400  | `data/extra/companeros.csv` |
-| Universidad | amigos_u           |  400  | `data/extra/amigos_u.csv` |
-| **Total**   |                    | **4.432** | 4.400 + 32 de familia |
+| Amigos      | panas              |  100  | `data/extra/panas.csv`    |
+| Amigos      | mejores_amigos     |  100  | `data/extra/mejores_amigos.csv` |
+| Amigos      | amigos_hot         |  210  | Base de datos             |
+| Pareja      | conocerse          |  100  | `data/extra/conocerse.csv` |
+| Pareja      | conocerse_fondo    |  100  | `data/extra/conocerse_fondo.csv` |
+| Pareja      | pareja_hot         |  210  | Base de datos             |
+| Universidad | universidad_hot    |  190  | Base de datos             |
+| Universidad | companeros         |  100  | `data/extra/companeros.csv` |
+| Universidad | amigos_u           |  100  | `data/extra/amigos_u.csv` |
+| **Total**   |                    | **1.210** | 610 hot + 600 no-hot  |
 
-- **2.218 preguntas + 2.214 retos** en el HTML final.
-- Cero duplicados exactos entre los 4.432 textos visibles.
-- Cada nodo no-hot tiene 200 preguntas y 200 retos.
+- **605 preguntas + 605 retos** en el HTML final.
+- Cero duplicados exactos entre los 1.210 textos visibles.
+- Cada nodo no-hot tiene 50 preguntas y 50 retos.
+- El contenido hot se reparte en 4 niveles por juego.
 - Los textos con variante de género usan `["base", "hombre", "mujer"]` y se
   resuelven según el jugador.
 
@@ -160,9 +159,9 @@ Quien-se-atreve-/
 ├── assets/
 │   └── logo.webp                # Logo original con transparencia
 ├── data/
-│   ├── hot/                     # 18 CSV (6 niveles × 3 juegos)
+│   ├── hot/                     # 12 CSV (4 niveles × 3 juegos)
 │   ├── extra/                   # 6 CSV de los nodos no-hot
-│   └── glosario.csv             # 72 términos
+│   └── glosario.csv             # Glosario opcional (la app usa el de la interfaz)
 ├── database/
 │   └── quien_se_atreve.sqlite   # Única base de datos del proyecto
 ├── src/
@@ -175,7 +174,7 @@ Quien-se-atreve-/
 │   ├── make_android_assets.py   # Genera iconos y splash de Android
 │   ├── prepare_android.py       # Nombre, versión, orientación y firma
 │   ├── verify.py                # Verifica BD, web, APK y archivos
-│   ├── verify.js                # Verifica los 4.432 ítems finales
+│   ├── verify.js                # Verifica los 1.210 ítems finales
 │   └── requirements.txt         # Pillow y NumPy para regenerar imágenes
 ├── .github/
 │   ├── workflows/
@@ -404,7 +403,7 @@ Reglas:
 - `nodos_extra(categoria, subcategoria, tipo, texto)`
 - Vista `preguntas_azar` e índices por `(juego, nivel, tipo)`
 
-Conteos: **2.000** filas hot en `preguntas`, **2.400** en `nodos_extra` y **72**
+Conteos: **610** filas hot en `preguntas`, **600** en `nodos_extra` y **0**
 términos en `glosario`. `tipo` es `verdad` o `reto`.
 
 Consulta rápida:

@@ -11,17 +11,15 @@ const path = require("path");
 const ROOT = path.resolve(__dirname, "..");
 const APP = path.join(ROOT, "app");
 const EXPECTED = {
-  "familia/primos": 16,
-  "familia/familia": 16,
-  "amigos/panas": 400,
-  "amigos/mejores_amigos": 400,
-  "amigos/amigos_hot": 600,
-  "pareja/conocerse": 400,
-  "pareja/conocerse_fondo": 400,
-  "pareja/pareja_hot": 800,
-  "universidad/companeros": 400,
-  "universidad/amigos_u": 400,
-  "universidad/universidad_hot": 600,
+  "amigos/panas": 100,
+  "amigos/mejores_amigos": 100,
+  "amigos/amigos_hot": 210,
+  "pareja/conocerse": 100,
+  "pareja/conocerse_fondo": 100,
+  "pareja/pareja_hot": 210,
+  "universidad/companeros": 100,
+  "universidad/amigos_u": 100,
+  "universidad/universidad_hot": 190,
 };
 
 const errors = [];
@@ -101,10 +99,10 @@ check(
   `Nodos inesperados o faltantes: ${actualNodes.filter((n) => !expectedNodes.includes(n)).join(", ") || "ninguno"}`
 );
 
-check(total === 4432, `Total final: ${total} (esperados 4432)`);
+check(total === 1210, `Total final: ${total} (esperados 1210)`);
 check(seen.size === total, `Textos únicos: ${seen.size} de ${total}`);
-check(preguntas === 2218, `Preguntas: ${preguntas} (esperadas 2218)`);
-check(retos === 2214, `Retos: ${retos} (esperados 2214)`);
+check(preguntas === 605, `Preguntas: ${preguntas} (esperadas 605)`);
+check(retos === 605, `Retos: ${retos} (esperados 605)`);
 
 console.log("Contenido de app/index.html");
 for (const [key, count] of Object.entries(perNode)) {
@@ -117,4 +115,4 @@ if (errors.length) {
   console.error(`\n❌ ${errors.length} error(es)`);
   process.exit(1);
 }
-console.log("\n✅ Contenido final correcto: 4.432 ítems, 0 duplicados");
+console.log("\n✅ Contenido final correcto: 1.210 ítems, 0 duplicados");
