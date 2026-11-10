@@ -178,8 +178,8 @@ verdad,¿Te reuniste con tus compañeros para estudiar y terminaron en una fiest
 verdad,¿Alguna vez has llegado a la universidad sin saber qué clase tocaba?
 verdad,¿Cuál es la peor resaca con la que has ido a clase?
 verdad,¿Has usado lentes de sol en clase para disimular que no dormiste?
-verdad,¿Alguna vez has almorzado en el campus en el mismo sitio de siempre?
-verdad,¿Cuál es la actividad extraacadémica en la que te has metido?
+verdad,¿Dónde sueles almorzar en el campus?
+verdad,¿Cuál es la actividad extracurricular en la que te has metido?
 verdad,¿Has formado parte de un grupo de la universidad y lo dejaste sin avisar?
 verdad,¿Alguna vez has organizado un evento para el campus?
 verdad,¿Cuál es el profesor que te ha marcado para bien?
@@ -195,7 +195,7 @@ verdad,¿Cuál es el consejo que le darías a alguien que empieza tu carrera?
 verdad,¿Has hecho amigos de verdad en la universidad?
 verdad,¿Alguna vez has llorado de risa con tus compañeros en plena clase?
 verdad,¿Cuál es el apunte que siempre prestas y nunca te devuelven a tiempo?
-verdad,¿Has apuntado en el celular porque olvidaste el cuaderno?
+verdad,¿Has tomado apuntes en el celular porque olvidaste el cuaderno?
 verdad,¿Alguna vez has entregado un trabajo con el nombre de otro compañero por error?
 verdad,¿Cuál es la materia que recomendarías a todo el mundo?
 reto,Imita a tu profesor más estricto durante treinta segundos.
@@ -211,7 +211,7 @@ reto,Cuenta la peor excusa que usaste para no ir a clase.
 reto,Simula una exposición improvisada sobre un tema que no conoces durante treinta segundos.
 reto,Imita a un compañero que siempre llega tarde a clase.
 reto,Cuenta la anécdota del trabajo en grupo que peor acabó.
-reto,Muestra la foto más rancia que tienes del campus.
+reto,Muestra la foto más antigua que tienes del campus.
 reto,Haz una lista rápida de tus cinco manías al estudiar.
 reto,Habla durante treinta segundos como si estuvieras en una tutoría pidiendo una prórroga.
 reto,Imita al profesor que habla tan rápido que no le entiendes.
@@ -291,7 +291,7 @@ reto,Cuenta la anécdota del trabajo que entregaste tarde.
 reto,Imita a alguien que estudia con música a todo volumen.
 reto,Habla durante treinta segundos como si fueras el delegado del curso.
 reto,Cuenta la vez que te tocó exponer sin haber preparado nada.
-reto,Haz una lista de las cafeterías del campus y tu pedido top.
+reto,Haz una lista de las cafeterías del campus y tu pedido favorito.
 reto,Simula una videollamada de grupo donde nadie habla.
 reto,Cuenta la anécdota del profesor que llegaba tarde a todas las clases.
 reto,Imita a un compañero que siempre llega con bebida energética.
