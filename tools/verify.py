@@ -121,6 +121,26 @@ def verificar_app() -> None:
         for icono in manifest.get("icons", []):
             check((APP / icono["src"]).exists(), f"Falta el icono {icono['src']}")
 
+    descarga = APP / "descargar.html"
+    check(descarga.exists(), "Falta app/descargar.html")
+    if descarga.exists():
+        texto = descarga.read_text(encoding="utf-8")
+        check(
+            "digitalassets-ai.github.io/Quien-se-atreve-/" in texto,
+            "La página de descarga no enlaza a la PWA",
+        )
+        check(
+            "releases" in texto and "api.github.com" in texto,
+            "La página de descarga no obtiene el APK de las Releases",
+        )
+        check(
+            "Agregar a pantalla de inicio" in texto,
+            "Faltan las instrucciones de instalación en iOS",
+        )
+        check("Digital Assets" in texto, "Falta el crédito en la página de descarga")
+    for qr in ("qr-descarga.png", "qr-descarga.svg"):
+        check((APP / qr).exists(), f"Falta app/{qr}")
+
     sw_path = APP / "sw.js"
     check(sw_path.exists(), "Falta app/sw.js")
     if sw_path.exists():

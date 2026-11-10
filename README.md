@@ -32,6 +32,17 @@
 > Assets no se responsabiliza de nada** de lo que ocurra antes, durante o
 > después del juego.
 
+## Descargar con un QR
+
+<p align="center">
+  <a href="https://digitalassets-ai.github.io/Quien-se-atreve-/descargar.html">
+    <img src="app/qr-descarga.png" alt="QR para descargar ¿Quién se atreve?" width="240">
+  </a>
+</p>
+
+Escanea el QR con la cámara del teléfono. La página detecta el sistema y muestra
+la descarga del APK en Android o la instalación como PWA en iOS.
+
 ## Instalar en Android (APK)
 
 En Android la distribución oficial es un **APK**. No es un acceso directo al
@@ -153,6 +164,8 @@ servidor y sin depender de una página externa.
 Quien-se-atreve-/
 ├── app/                         # Web assets del APK y de la PWA de iOS
 │   ├── index.html               # App final, autónoma y con el logo incrustado
+│   ├── descargar.html           # Página de descarga según Android o iOS
+│   ├── qr-descarga.png          # QR único que abre descargar.html
 │   ├── manifest.webmanifest     # Manifiesto PWA (iOS y navegador)
 │   ├── sw.js                    # Service worker para uso sin conexión
 │   └── icons/                   # Iconos de la PWA y de iOS
@@ -171,6 +184,7 @@ Quien-se-atreve-/
 │   ├── crear_bd.py              # CSV → SQLite
 │   ├── montar_interfaz.py       # SQLite + CSV + logo → app/index.html
 │   ├── make_icons.py            # Genera los iconos web desde el logo
+│   ├── make_qr.py               # Genera el QR único de descarga
 │   ├── make_android_assets.py   # Genera iconos y splash de Android
 │   ├── prepare_android.py       # Nombre, versión, orientación y firma
 │   ├── verify.py                # Verifica BD, web, APK y archivos

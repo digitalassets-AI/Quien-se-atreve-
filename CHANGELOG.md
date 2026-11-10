@@ -11,6 +11,11 @@ el versionado sigue [Semantic Versioning](https://semver.org/lang/es/).
 
 - Mejoras de accesibilidad y pruebas en más dispositivos.
 
+### Agregado
+
+- Página de descarga con detección de Android/iOS y QR único para ambas
+  plataformas.
+
 ## [1.1.1] - 2026-11-09
 
 ### Cambiado

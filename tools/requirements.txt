@@ -1,4 +1,6 @@
 # Solo necesarias para regenerar iconos web y Android
-# (tools/make_icons.py y tools/make_android_assets.py).
+# (tools/make_icons.py y tools/make_android_assets.py) y el QR de descarga
+# (tools/make_qr.py).
 Pillow>=10.0
 numpy>=1.26
+segno>=1.6
